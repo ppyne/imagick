@@ -28,7 +28,7 @@ And enjoy.
 
 ## Notes
 
-We didn't need to convert images from one format to another, so we didn't link agains libpng, libjpeg or libwebp. But it is possible, we made a try with libwebp and it worked like a charm.
+We didn't need to convert images from one format to another, so we didn't link agains libpng, libjpeg or libwebp. But it is possible, we made a try with libwebp and it worked like a charm. Also it is possible to convert to those formats with JS directly (See below for an explanation).
 
 We use the Emscripten filesystem (FS) to exchange data between JS and ImageMagick.
 
@@ -38,4 +38,38 @@ The `imagick.html` file present is not very usefull, the most important files ar
 
 Since the RGBA channels in ImageData are 4 bytes (of 8 bits), ImageMagick can be compiled with the quantum depth option of 8 (`--with-quantum-depth=8`), we dont see the need of a greater quantum depth, nor the HDRI option for the moment.
 
+Since the JS Canvas permits shapes and text drawings, we don't see the need to use ImageMagick for this purpose.
+
 And yes for many years now we use pure browser JS and jquery, and still do, we are not much exited by Nodejs, or TypeScript... sorry.
+
+### Native JS image format conversion
+
+Here is an example of convertion thanks to the canvas.
+
+```javascript
+let img = document.querySelector('#my_image');
+let canvas = document.createElement("canvas");
+canvas.width = img.width;
+canvas.height = img.height;
+let ctx = canvas.getContext("2d");
+ctx.drawImage(img, 0, 0);
+img.src = canvas.toDataURL('image/webp');
+```
+
+Thanks to this process, you can convert any PNG, JPEG, GIF, WEBP format to another.
+
+The last line can be replaced with this one for PNG:
+
+```javascript
+img.src = canvas.toDataURL('image/png');
+```
+
+or this one for JPEG:
+
+```javascript
+img.src = canvas.toDataURL('image/jpeg', 0.8);
+```
+
+where `0.8` is the image quality.
+
+See the documentation [here](https://developer.mozilla.org/en-US/docs/Web/API/HTMLCanvasElement/toDataURL) to learn more.
