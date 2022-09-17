@@ -8,9 +8,9 @@ Try it here [ppyne.github.io/imagick](https://ppyne.github.io/imagick/).
 
 - ImageMagick Legacy version 6.9.12-62 (tar.gz present in the repo)
 - Emscripten version 3.1.20
-- Unix like environment (Mac or Linux is fine) with bash
-- essential GNU building tools like make or pkg-config
-- a web server like Apache2
+- A Unix like environment (Mac or Linux is fine) with bash
+- Essential GNU building tools like make or pkg-config
+- A web server like Apache2
 
 ## How to build
 
