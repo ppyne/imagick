@@ -183,10 +183,9 @@ void _IMListUniqueColors(const unsigned int width, const unsigned int height) {
                         row = PixelGetNextIteratorRow(iter, &cols);
                         for (x = 0; x < cols; ++x) {
                             PixelGetMagickColor(row[x], &pixel);
-                            if (first == true) {
-                                sprintf(buffer, "\"#%02X%02X%02X\"", (unsigned char)pixel.red, (unsigned char)pixel.green, (unsigned char)pixel.blue);
-                                first = false;
-                            } else sprintf(buffer, ",\"#%02X%02X%02X\"", (unsigned char)pixel.red, (unsigned char)pixel.green, (unsigned char)pixel.blue);
+                            sprintf(buffer, "\"#%02X%02X%02X\"", (unsigned char)pixel.red, (unsigned char)pixel.green, (unsigned char)pixel.blue);
+                            if (first == true) first = false;
+                            else fwrite((void *)",", 1, 1, output);
                             fwrite((void *)buffer, strlen(buffer), 1, output);
                         }
                         PixelSyncIterator(iter);
