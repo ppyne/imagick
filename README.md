@@ -15,8 +15,13 @@ Try it here [ppyne.github.io/imagick](https://ppyne.github.io/imagick/).
 ## How to build
 
 Create a directory in the path served by your web server.
+
 Review the content of the script `make.sh` and adapt it to your project or your environment.
+
 Make the script `make.sh` executable (`chmod +x ./make.sh`).
+
+Feel free to add new functions to `imagick.c` and `index.html`, and ask for a pull request to make your work available to as many people as possible.
+
 And enjoy.
 
 ## Notes
@@ -26,3 +31,7 @@ We didn't need to convert images from one format to another, so we didn't link a
 We use the Emscripten filesystem (FS) to exchange data between JS and WASM.
 
 We also found convenient to use the native raw ".rgba" ImageMagick file format, which has the same byte order as the JS ImageData.
+
+The `imagick.html` file present is not very usefull, the most important files are `imagick.wasm`, `imagick.js` and `index.html`.
+
+And yes for many years now we use pure browser JS and jquery, and still do, we are not much exited by Nodejs, or TypeScript... sorry.
