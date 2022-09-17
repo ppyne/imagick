@@ -30,10 +30,12 @@ And enjoy.
 
 We didn't need to convert images from one format to another, so we didn't link agains libpng, libjpeg or libwebp. But it is possible, we made a try with libwebp and it worked like a charm.
 
-We use the Emscripten filesystem (FS) to exchange data between JS and WASM.
+We use the Emscripten filesystem (FS) to exchange data between JS and ImageMagick.
 
 We also found convenient to use the native raw ".rgba" ImageMagick file format, which has the same byte order as the JS ImageData.
 
 The `imagick.html` file present is not very usefull, the most important files are `imagick.wasm`, `imagick.js` and `index.html`.
+
+Since the RGBA channels in ImageData are 4 bytes (of 8 bits), ImageMagick can be compiled with the quantum depth option of 8 (`--with-quantum-depth=8`), we dont see the need of a greater quantum depth, nor the HDRI option for the moment.
 
 And yes for many years now we use pure browser JS and jquery, and still do, we are not much exited by Nodejs, or TypeScript... sorry.
