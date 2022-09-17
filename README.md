@@ -7,7 +7,7 @@ Try it here [ppyne.github.io/imagick](https://ppyne.github.io/imagick/).
 ## Requirements
 
 - ImageMagick Legacy version 6.9.12-62 (tar.gz present in the repo)
-- Emscripten version 3.1.20
+- Emscripten SDK version 3.1.20
 - A Unix like environment (Mac or Linux is fine) with bash
 - Essential GNU building tools like make or pkg-config
 - A web server like Apache2
@@ -15,6 +15,8 @@ Try it here [ppyne.github.io/imagick](https://ppyne.github.io/imagick/).
 ## How to build
 
 Create a directory in the path served by your web server.
+
+Of course, don't forget to run the Emscripten SDK evironment script before doing anything (`emsdk/emsdk_env.sh`).
 
 Review the content of the script `make.sh` and adapt it to your project or your environment.
 
