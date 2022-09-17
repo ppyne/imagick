@@ -22,7 +22,7 @@ Review the content of the script `make.sh` and adapt it to your project or your 
 
 Make the script `make.sh` executable (`chmod +x ./make.sh`).
 
-Feel free to add new functions to `imagick.c` and `index.html`, and ask for a pull request to make your work available to as many people as possible.
+Feel free to add new functions to `imagick.c` and `index.html`, and ask for a pull request to make your work available to as many people as possible (MagickWand Image API for C documentation is available [here](https://legacy.imagemagick.org/script/magick-wand.php)).
 
 And enjoy.
 
