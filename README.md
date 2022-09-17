@@ -38,7 +38,7 @@ The `imagick.html` file present is not very usefull, the most important files ar
 
 Since the RGBA channels in ImageData are 4 bytes (of 8 bits), ImageMagick can be compiled with the quantum depth option of 8 (`--with-quantum-depth=8`), we dont see the need of a greater quantum depth, nor the HDRI option for the moment.
 
-Since the JS Canvas permits shapes and text drawings, we don't see the need to use ImageMagick for this purpose.
+Since the JS Canvas permits shapes and text drawings natively, we don't see the need to use ImageMagick for this purpose, and didn't see the need to compile IM with the freetype lib.
 
 And yes for many years now we use pure browser JS and jquery, and still do, we are not much exited by Nodejs, or TypeScript... sorry.
 
