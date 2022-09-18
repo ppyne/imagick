@@ -201,6 +201,73 @@ void _IMListUniqueColors(const unsigned int width, const unsigned int height) {
     } else console_error("Error while opening \"dst.json\" for writing: ", strerror(errno));
 }
 
+/* channel types in magick/magick-type.h */
+void _IMAutoLevel(const unsigned int width, const unsigned int height, const int channels) {
+    MagickBooleanType status;
+    MagickWand *magick_wand;
+    MagickWandGenesis();
+    magick_wand = NewMagickWand();
+    MagickSetSize(magick_wand, width, height);
+    status = MagickReadImage(magick_wand, SRC_FILE);
+    if (status == MagickFalse) {
+        strwanderror(magick_wand);
+    } else {
+        MagickResetIterator(magick_wand);
+        while (MagickNextImage(magick_wand) != MagickFalse) MagickAutoLevelImageChannel(magick_wand, channels);
+        status = MagickWriteImages(magick_wand, DST_FILE, MagickTrue);
+        if (status == MagickFalse) {
+            strwanderror(magick_wand);
+        } else {
+            magick_wand = DestroyMagickWand(magick_wand);
+            MagickWandTerminus();
+        }
+    }
+}
+
+void _IMAutoGamma(const unsigned int width, const unsigned int height, const int channels) {
+    MagickBooleanType status;
+    MagickWand *magick_wand;
+    MagickWandGenesis();
+    magick_wand = NewMagickWand();
+    MagickSetSize(magick_wand, width, height);
+    status = MagickReadImage(magick_wand, SRC_FILE);
+    if (status == MagickFalse) {
+        strwanderror(magick_wand);
+    } else {
+        MagickResetIterator(magick_wand);
+        while (MagickNextImage(magick_wand) != MagickFalse) MagickAutoGammaImageChannel(magick_wand, channels);
+        status = MagickWriteImages(magick_wand, DST_FILE, MagickTrue);
+        if (status == MagickFalse) {
+            strwanderror(magick_wand);
+        } else {
+            magick_wand = DestroyMagickWand(magick_wand);
+            MagickWandTerminus();
+        }
+    }
+}
+
+void _IMContrast(const unsigned int width, const unsigned int height, bool increase) {
+    MagickBooleanType status;
+    MagickWand *magick_wand;
+    MagickWandGenesis();
+    magick_wand = NewMagickWand();
+    MagickSetSize(magick_wand, width, height);
+    status = MagickReadImage(magick_wand, SRC_FILE);
+    if (status == MagickFalse) {
+        strwanderror(magick_wand);
+    } else {
+        MagickResetIterator(magick_wand);
+        while (MagickNextImage(magick_wand) != MagickFalse) MagickContrastImage(magick_wand, increase);
+        status = MagickWriteImages(magick_wand, DST_FILE, MagickTrue);
+        if (status == MagickFalse) {
+            strwanderror(magick_wand);
+        } else {
+            magick_wand = DestroyMagickWand(magick_wand);
+            MagickWandTerminus();
+        }
+    }
+}
+
 int main() {
     is_ready();
     return 0;

@@ -37,6 +37,7 @@
     <script>
         const IMEnumFilters = ['Default', 'Point', 'Box', 'Triangle', 'Hermite', 'Hanning', 'Hamming', 'Blackman', 'Gaussian', 'Quadratic', 'Cubic', 'Catrom', 'Mitchell', 'Jinc', 'Sinc', 'SincFast', 'Kaiser', 'Welsh', 'Parzen', 'Bohman', 'Bartlett', 'Lagrange', 'Lanczos', 'LanczosSharp', 'Lanczos2', 'Lanczos2Sharp', 'Robidoux', 'RobidouxSharp', 'Cosine', 'Spline', 'LanczosRadius'];
         const IMEnumColorspaces = ['Default', 'RGB', 'GRAY', 'Transparent', 'OHTA', 'Lab', 'XYZ', 'YCbCr', 'YCC', 'YIQ', 'YPbPr', 'YUV', 'CMYK', 'sRGB', 'HSB', 'HSL', 'HWB', 'Rec601Luma', 'Rec601YCbCr', 'Rec709Luma', 'Rec709YCbCr', 'Log', 'CMY', 'Luv', 'HCL', 'LCH', 'LMS', 'LCHab', 'LCHuv', 'scRGB', 'HSI', 'HSV', 'HCLp', 'YDbDr', 'xyY', 'LinearGRAY'];
+        const IMEnumChannels = { 'Red': 0x0001, 'Green': 0x0002, 'Blue': 0x0004, 'RGB': 0x0007, 'Alpha': 0x0008, 'RGBA': 0x000F };
         let _IMSetSource = ($selector) => {
             let img = $selector.get(0);
             if (img.width === 0 || img.height === 0) return [false,false];
@@ -112,6 +113,27 @@
             _IMClearFS();
             return json;
         }
+        let IMAutoLevel = ($src, $dst, channels = IMEnumChannels.RGB) => {
+            const [ width, height ] = _IMSetSource($src);
+            if (width === false) return;
+            _IMAutoLevel(width, height, channels);
+            _IMSetDestination($dst, width, height);
+            _IMClearFS();
+        }
+        let IMAutoGamma = ($src, $dst, channels = IMEnumChannels.RGB) => {
+            const [ width, height ] = _IMSetSource($src);
+            if (width === false) return;
+            _IMAutoGamma(width, height, channels);
+            _IMSetDestination($dst, width, height);
+            _IMClearFS();
+        }
+        let IMContrast = ($src, $dst, increase = true) => {
+            const [ width, height ] = _IMSetSource($src);
+            if (width === false) return;
+            _IMContrast(width, height, increase);
+            _IMSetDestination($dst, width, height);
+            _IMClearFS();
+        }
         let onResizeButton = () => {
             IMResize($('#src'), $('#width').val(), $('#height').val(), IMEnumFilters.indexOf($('#filters').val()), $('#resized'));
         };
@@ -138,27 +160,53 @@
                 $color.prepend($square);
                 $container.append($color);
             }
-        }
+        };
+        let onAutolevelButton = () => {
+            IMAutoLevel($('#src'), $('#autoleveled'), IMEnumChannels[$('#alChannels').val()]);
+        };
+        let onAutogammaButton = () => {
+            IMAutoGamma($('#src'), $('#autogammaed'), IMEnumChannels[$('#agChannels').val()]);
+        };
+        let onContrastButton = () => {
+            let increase = $('input[name=contrastRadio]:checked').val();
+            IMContrast($('#src'), $('#contrasted'), increase);
+        };
         let onIMReady = () => {
             _IMResize = Module.cwrap('_IMResize', null, ['number', 'number', 'number', 'number', 'number', 'number']);
             _IMCharcoal = Module.cwrap('_IMCharcoal', null, ['number', 'number', 'number', 'number']);
             _IMSketch = Module.cwrap('_IMSketch', null, ['number', 'number', 'number', 'number', 'number']);
             _IMQuantize = Module.cwrap('_IMQuantize', null, ['number', 'number', 'number', 'number', 'number', 'number', 'number']);
             _IMListUniqueColors = Module.cwrap('_IMListUniqueColors', null, ['number', 'number']);
+            _IMAutoLevel = Module.cwrap('_IMAutoLevel', null, ['number', 'number', 'number']);
+            _IMAutoGamma = Module.cwrap('_IMAutoGamma', null, ['number', 'number', 'number']);
+            _IMContrast = Module.cwrap('_IMContrast', null, ['number', 'number', 'number']);
             let $filters = $('#filters');
             const sortedFilters = [...IMEnumFilters].sort();
-            for (filter of sortedFilters) {
+            for (const filter of sortedFilters) {
                 let $opt = $('<option />');
                 $opt.val(filter);
                 $opt.text(filter);
                 if (filter === 'Default') $opt.prop('selected', true);
                 $filters.append($opt);
             }
+            for (const channelsId of ['#alChannels', '#agChannels']) {
+                let $channels = $(channelsId);
+                for (channel of Object.keys(IMEnumChannels)) {
+                    let $opt = $('<option />');
+                    $opt.val(channel);
+                    $opt.text(channel);
+                    if (channel === 'RGB') $opt.prop('selected', true);
+                    $channels.append($opt);
+                }
+            }
             $('#resizeButton').on('click', onResizeButton);
             $('#charcoalButton').on('click', onCharcoalButton);
             $('#sketchButton').on('click', onSketchButton);
             $('#quantized').on('load', onQuantizedLoaded);
             $('#quantizeButton').on('click', onQuantizeButton);
+            $('#autolevelButton').on('click', onAutolevelButton);
+            $('#autogammaButton').on('click', onAutogammaButton);
+            $('#contrastButton').on('click', onContrastButton);
             $('main').show();
         };
         $(() => {
@@ -185,6 +233,15 @@
         <p><img id="quantized" /></p>
         <h3>Palette <span id="numberColors"></span></h3>
         <p id="palette"></p>
+        <h2>Auto level</h2>
+        <p><label for="alChannels">Channel(s)</label> <select id="alChannels"></select>, <button id="autolevelButton" type="button">Apply</button></p>
+        <p><img id="autoleveled" /></p>
+        <h2>Auto gamma</h2>
+        <p><label for="agChannels">Channel(s)</label> <select id="agChannels"></select>, <button id="autogammaButton" type="button">Apply</button></p>
+        <p><img id="autogammaed" /></p>
+        <h2>Contrast</h2>
+        <p><input type="radio" id="contrastIncrease" name="contrastRadio" value="1" checked /><label for="contrastIncrease">Increase</label> <input type="radio" id="contrastDecrease" name="contrastRadio" value="0" /><label for="contrastDecrease">Decrease</label>, <button id="contrastButton" type="button">Apply</button></p>
+        <p><img id="contrasted" /></p>
     </main>
 </body>
 </html>

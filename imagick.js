@@ -5452,6 +5452,15 @@ var __IMListUniqueColors = Module["__IMListUniqueColors"] = createExportWrapper(
 var ___errno_location = Module["___errno_location"] = createExportWrapper("__errno_location");
 
 /** @type {function(...*):?} */
+var __IMAutoLevel = Module["__IMAutoLevel"] = createExportWrapper("_IMAutoLevel");
+
+/** @type {function(...*):?} */
+var __IMAutoGamma = Module["__IMAutoGamma"] = createExportWrapper("_IMAutoGamma");
+
+/** @type {function(...*):?} */
+var __IMContrast = Module["__IMContrast"] = createExportWrapper("_IMContrast");
+
+/** @type {function(...*):?} */
 var _main = Module["_main"] = createExportWrapper("main");
 
 /** @type {function(...*):?} */
@@ -5492,8 +5501,8 @@ var stackAlloc = Module["stackAlloc"] = createExportWrapper("stackAlloc");
 /** @type {function(...*):?} */
 var dynCall_jiji = Module["dynCall_jiji"] = createExportWrapper("dynCall_jiji");
 
-var ___start_em_js = Module['___start_em_js'] = 525936;
-var ___stop_em_js = Module['___stop_em_js'] = 527104;
+var ___start_em_js = Module['___start_em_js'] = 526048;
+var ___stop_em_js = Module['___stop_em_js'] = 527216;
 
 
 
