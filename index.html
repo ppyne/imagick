@@ -171,6 +171,9 @@
             let increase = $('input[name=contrastRadio]:checked').val();
             IMContrast($('#src'), $('#contrasted'), increase);
         };
+        let onSourceChange = () => {
+            $('#src').attr('src', $('#source').val());
+        };
         let onIMReady = () => {
             _IMResize = Module.cwrap('_IMResize', null, ['number', 'number', 'number', 'number', 'number', 'number']);
             _IMCharcoal = Module.cwrap('_IMCharcoal', null, ['number', 'number', 'number', 'number']);
@@ -207,6 +210,7 @@
             $('#autolevelButton').on('click', onAutolevelButton);
             $('#autogammaButton').on('click', onAutogammaButton);
             $('#contrastButton').on('click', onContrastButton);
+            $('#source').on('change', onSourceChange);
             $('main').show();
         };
         $(() => {
@@ -218,6 +222,15 @@
     <main style="display: none;">
         <h1>Test ImageMagick Legacy</h1>
         <h2>Source</h2>
+        <p><select id="source">
+            <option value="peppers.png" selected>peppers.png</option>
+            <option value="lena.png">lena.png</option>
+            <option value="parrot.jpg">parrot.jpg</option>
+            <option value="balloons.png">balloons.png</option>
+            <option value="wellexposed.png">wellexposed.png</option>
+            <option value="overexposed.png">overexposed.png</option>
+            <option value="underexposed.png">underexposed.png</option>
+        </select></p>
         <p><img id="src" src="peppers.png" /></p>
         <h2>Resize</h2>
         <p><label for="width">Width</label> <input id="width" type="number" value="400" /> px, <label for="height">Height</label> <input id="height" type="number" value="400" /> px, <label for="filters">Filter</label> <select id="filters"></select>, <button id="resizeButton" type="button">Resize</button></p>
