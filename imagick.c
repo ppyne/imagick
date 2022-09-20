@@ -650,19 +650,6 @@ void _IMColors(const unsigned int width, const unsigned int height, const unsign
     putenv("MAGICK_CONFIGURE_PATH=/");
     char **cmdargs;
     int argcount = 11;
-    char *cmdargsNone[] = {
-        "convert",
-        "-size",
-        strsize,
-        "-depth",
-        "8",
-        "src.rgba",
-        "+dither",
-        "-colors",
-        strnumber,
-        "dst.rgba",
-        NULL
-    };
     char *cmdargsDither[] = {
         "convert",
         "-size",
@@ -691,10 +678,7 @@ void _IMColors(const unsigned int width, const unsigned int height, const unsign
         "dst.rgba",
         NULL
     };
-    if (!ordered_dither && strcmp("none", strdither) == 0) {
-        cmdargs = cmdargsNone;
-        argcount = 10;
-    } else if (!ordered_dither) cmdargs = cmdargsDither;
+    if (!ordered_dither) cmdargs = cmdargsDither;
     else cmdargs = cmdargsOrderedDither;
     MagickWandGenesis();
     ImageInfo *info = AcquireImageInfo();
