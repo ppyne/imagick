@@ -4,6 +4,7 @@
 #include <string.h>
 #include <errno.h>
 #include <stdbool.h>
+#include <unistd.h>
 #include <wand/MagickWand.h>
 
 const char SRC_FILE[] = "src.rgba";
@@ -290,6 +291,8 @@ void _IMContrast(const unsigned int width, const unsigned int height, bool incre
 }
 
 void storeThresholdsXml() {
+    const char *filename = "thresholds.xml";
+    if (access(filename, F_OK) == 0) return;
     const char data[] = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n"
 "<!DOCTYPE thresholds [\n"
 "  <!ELEMENT thresholds (threshold)+>\n"
@@ -627,7 +630,7 @@ void storeThresholdsXml() {
 "\n"
 "</thresholds>";
     size_t len = strlen(data);
-    FILE *handle = fopen("thresholds.xml", "w");
+    FILE *handle = fopen(filename, "w");
     if (handle != NULL) {
         fwrite((void *)data, len, 1, handle);
         fclose(handle);
