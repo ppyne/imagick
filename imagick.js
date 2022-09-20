@@ -5446,6 +5446,9 @@ var __IMSketch = Module["__IMSketch"] = createExportWrapper("_IMSketch");
 var __IMQuantize = Module["__IMQuantize"] = createExportWrapper("_IMQuantize");
 
 /** @type {function(...*):?} */
+var __IMPosterize = Module["__IMPosterize"] = createExportWrapper("_IMPosterize");
+
+/** @type {function(...*):?} */
 var __IMListUniqueColors = Module["__IMListUniqueColors"] = createExportWrapper("_IMListUniqueColors");
 
 /** @type {function(...*):?} */
@@ -5459,6 +5462,9 @@ var __IMAutoGamma = Module["__IMAutoGamma"] = createExportWrapper("_IMAutoGamma"
 
 /** @type {function(...*):?} */
 var __IMContrast = Module["__IMContrast"] = createExportWrapper("_IMContrast");
+
+/** @type {function(...*):?} */
+var __IMColors = Module["__IMColors"] = createExportWrapper("_IMColors");
 
 /** @type {function(...*):?} */
 var _main = Module["_main"] = createExportWrapper("main");
@@ -5499,10 +5505,13 @@ var stackRestore = Module["stackRestore"] = createExportWrapper("stackRestore");
 var stackAlloc = Module["stackAlloc"] = createExportWrapper("stackAlloc");
 
 /** @type {function(...*):?} */
+var dynCall_iijji = Module["dynCall_iijji"] = createExportWrapper("dynCall_iijji");
+
+/** @type {function(...*):?} */
 var dynCall_jiji = Module["dynCall_jiji"] = createExportWrapper("dynCall_jiji");
 
-var ___start_em_js = Module['___start_em_js'] = 526048;
-var ___stop_em_js = Module['___stop_em_js'] = 527216;
+var ___start_em_js = Module['___start_em_js'] = 573840;
+var ___stop_em_js = Module['___stop_em_js'] = 575008;
 
 
 

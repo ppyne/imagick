@@ -38,6 +38,30 @@
         const IMEnumFilters = ['Default', 'Point', 'Box', 'Triangle', 'Hermite', 'Hanning', 'Hamming', 'Blackman', 'Gaussian', 'Quadratic', 'Cubic', 'Catrom', 'Mitchell', 'Jinc', 'Sinc', 'SincFast', 'Kaiser', 'Welsh', 'Parzen', 'Bohman', 'Bartlett', 'Lagrange', 'Lanczos', 'LanczosSharp', 'Lanczos2', 'Lanczos2Sharp', 'Robidoux', 'RobidouxSharp', 'Cosine', 'Spline', 'LanczosRadius'];
         const IMEnumColorspaces = ['Default', 'RGB', 'GRAY', 'Transparent', 'OHTA', 'Lab', 'XYZ', 'YCbCr', 'YCC', 'YIQ', 'YPbPr', 'YUV', 'CMYK', 'sRGB', 'HSB', 'HSL', 'HWB', 'Rec601Luma', 'Rec601YCbCr', 'Rec709Luma', 'Rec709YCbCr', 'Log', 'CMY', 'Luv', 'HCL', 'LCH', 'LMS', 'LCHab', 'LCHuv', 'scRGB', 'HSI', 'HSV', 'HCLp', 'YDbDr', 'xyY', 'LinearGRAY'];
         const IMEnumChannels = { 'Red': 0x0001, 'Green': 0x0002, 'Blue': 0x0004, 'RGB': 0x0007, 'Alpha': 0x0008, 'RGBA': 0x000F };
+        const IMEnumDithers = {
+            'none': [false, 'none', 'None'],
+            'FloydSteinberg': [false, 'FloydSteinberg', 'FloydSteinberg'],
+            'Riemersma': [false, 'Riemersma', 'Riemersma'],
+            'threshold': [true, 'threshold', 'Threshold 1x1 (non-dither)'],
+            'checks': [true, 'checks', 'Checkerboard 2x1 (dither)'],
+            'o2x2': [true, 'o2x2', 'Ordered 2x2 (dispersed)'],
+            'o3x3': [true, 'o3x3', 'Ordered 3x3 (dispersed)'],
+            'o4x4': [true, 'o4x4', 'Ordered 4x4 (dispersed)'],
+            'o8x8': [true, 'o8x8', 'Ordered 8x8 (dispersed)'],
+            'h4x4a': [true, 'h4x4a', 'Halftone 4x4 (angled)'],
+            'h6x6a': [true, 'h6x6a', 'Halftone 6x6 (angled)'],
+            'h8x8a': [true, 'h8x8a', 'Halftone 8x8 (angled)'],
+            'h4x4o': [true, 'h4x4o', 'Halftone 4x4 (orthogonal)'],
+            'h6x6o': [true, 'h6x6o', 'Halftone 6x6 (orthogonal)'],
+            'h8x8o': [true, 'h8x8o', 'Halftone 8x8 (orthogonal)'],
+            'h16x16o': [true, 'h16x16o', 'Halftone 16x16 (orthogonal)'],
+            'c5x5b': [true, 'c5x5b', 'Circles 5x5 (black)'],
+            'c5x5w': [true, 'c5x5w', 'Circles 5x5 (white)'],
+            'c6x6b': [true, 'c6x6b', 'Circles 6x6 (black)'],
+            'c6x6w': [true, 'c6x6w', 'Circles 6x6 (white)'],
+            'c7x7b': [true, 'c7x7b', 'Circles 7x7 (black)'],
+            'c7x7w': [true, 'c7x7w', 'Circles 7x7 (white)'],
+        };
         let _IMSetSource = ($selector) => {
             let img = $selector.get(0);
             if (img.width === 0 || img.height === 0) return [false,false];
@@ -101,7 +125,14 @@
         let IMQuantize = ($src, numberColors, $dst) => {
             const [ width, height ] = _IMSetSource($src);
             if (width === false) return;
-            _IMQuantize(width, height, numberColors, IMEnumColorspaces.indexOf('sRGB'), 8, true, true);
+            _IMQuantize(width, height, numberColors, IMEnumColorspaces.indexOf('sRGB'), 1, false, false);
+            _IMSetDestination($dst, width, height);
+            _IMClearFS();
+        }
+        let IMPosterize = ($src, levels, $dst) => {
+            const [ width, height ] = _IMSetSource($src);
+            if (width === false) return;
+            _IMPosterize(width, height, levels, true);
             _IMSetDestination($dst, width, height);
             _IMClearFS();
         }
@@ -134,6 +165,13 @@
             _IMSetDestination($dst, width, height);
             _IMClearFS();
         }
+        let IMColors = ($src, numberColors, dither, $dst) => {
+            const [ width, height ] = _IMSetSource($src);
+            if (width === false) return;
+            _IMColors(width, height, numberColors, IMEnumDithers[dither][0], IMEnumDithers[dither][1]);
+            _IMSetDestination($dst, width, height);
+            _IMClearFS();
+        }
         let onResizeButton = () => {
             IMResize($('#src'), $('#width').val(), $('#height').val(), IMEnumFilters.indexOf($('#filters').val()), $('#resized'));
         };
@@ -151,6 +189,42 @@
             if (!Array.isArray(colors)) return;
             $('#numberColors').text('('+colors.length+' color'+(colors.length>1?'s':'')+')');
             let $container = $('#palette');
+            $container.empty();
+            for (color of colors) {
+                let $color = $('<span class="color" />');
+                let $square = $('<span class="square" />');
+                $square.css('background-color', color);
+                $color.text(color);
+                $color.prepend($square);
+                $container.append($color);
+            }
+        };
+        let onColorButton = () => {
+            IMColors($('#src'), $('#colorNumber').val(), $('#colorDither').val(), $('#colored'));
+        };
+        let onColoredLoaded = () => {
+            let colors = IMListUniqueColors($('#colored'));
+            if (!Array.isArray(colors)) return;
+            $('#colorNumberColors').text('('+colors.length+' color'+(colors.length>1?'s':'')+')');
+            let $container = $('#colorPalette');
+            $container.empty();
+            for (color of colors) {
+                let $color = $('<span class="color" />');
+                let $square = $('<span class="square" />');
+                $square.css('background-color', color);
+                $color.text(color);
+                $color.prepend($square);
+                $container.append($color);
+            }
+        };
+        let onPosterizeButton = () => {
+            IMPosterize($('#src'), $('#posterizeLevels').val(), $('#posterized'));
+        };
+        let onPosterizedLoaded = () => {
+            let colors = IMListUniqueColors($('#posterized'));
+            if (!Array.isArray(colors)) return;
+            $('#posterizeNumberColors').text('('+colors.length+' color'+(colors.length>1?'s':'')+')');
+            let $container = $('#posterizePalette');
             $container.empty();
             for (color of colors) {
                 let $color = $('<span class="color" />');
@@ -179,10 +253,12 @@
             _IMCharcoal = Module.cwrap('_IMCharcoal', null, ['number', 'number', 'number', 'number']);
             _IMSketch = Module.cwrap('_IMSketch', null, ['number', 'number', 'number', 'number', 'number']);
             _IMQuantize = Module.cwrap('_IMQuantize', null, ['number', 'number', 'number', 'number', 'number', 'number', 'number']);
+            _IMPosterize = Module.cwrap('_IMPosterize', null, ['number', 'number', 'number', 'number']);
             _IMListUniqueColors = Module.cwrap('_IMListUniqueColors', null, ['number', 'number']);
             _IMAutoLevel = Module.cwrap('_IMAutoLevel', null, ['number', 'number', 'number']);
             _IMAutoGamma = Module.cwrap('_IMAutoGamma', null, ['number', 'number', 'number']);
             _IMContrast = Module.cwrap('_IMContrast', null, ['number', 'number', 'number']);
+            _IMColors = Module.cwrap('_IMColors', null, ['number', 'number', 'number', 'number', 'string']);
             let $filters = $('#filters');
             const sortedFilters = [...IMEnumFilters].sort();
             for (const filter of sortedFilters) {
@@ -202,11 +278,23 @@
                     $channels.append($opt);
                 }
             }
+            let $ditherSelect = $('#colorDither');
+            for (const dither of Object.keys(IMEnumDithers)) {
+                let $opt = $('<option />');
+                $opt.val(dither);
+                $opt.text(IMEnumDithers[dither][2]);
+                if (dither === 'FloydSteinberg') $opt.prop('selected', true);
+                $ditherSelect.append($opt);
+            }
             $('#resizeButton').on('click', onResizeButton);
             $('#charcoalButton').on('click', onCharcoalButton);
             $('#sketchButton').on('click', onSketchButton);
             $('#quantized').on('load', onQuantizedLoaded);
             $('#quantizeButton').on('click', onQuantizeButton);
+            $('#colored').on('load', onColoredLoaded);
+            $('#colorButton').on('click', onColorButton);
+            $('#posterized').on('load', onPosterizedLoaded);
+            $('#posterizeButton').on('click', onPosterizeButton);
             $('#autolevelButton').on('click', onAutolevelButton);
             $('#autogammaButton').on('click', onAutogammaButton);
             $('#contrastButton').on('click', onContrastButton);
@@ -246,6 +334,16 @@
         <p><img id="quantized" /></p>
         <h3>Palette <span id="numberColors"></span></h3>
         <p id="palette"></p>
+        <h2>Command "-colors n"</h2>
+        <p><label for="colorDither">Dither</label> <select id="colorDither"></select>, <label for="colorNumber">Number of colors</label> <input id="colorNumber" type="number" value="8" />, <button id="colorButton" type="button">Apply</button></p>
+        <p><img id="colored" /></p>
+        <h3>Palette <span id="colorNumberColors"></span></h3>
+        <p id="colorPalette"></p>
+        <h2>Posterize</h2>
+        <p><label for="posterizeLevels">Levels</label> <input id="posterizeLevels" type="number" value="2" />, <button id="posterizeButton" type="button">Apply</button></p>
+        <p><img id="posterized" /></p>
+        <h3>Palette <span id="posterizeNumberColors"></span></h3>
+        <p id="posterizePalette"></p>
         <h2>Auto level</h2>
         <p><label for="alChannels">Channel(s)</label> <select id="alChannels"></select>, <button id="autolevelButton" type="button">Apply</button></p>
         <p><img id="autoleveled" /></p>
