@@ -16,6 +16,10 @@
             width: 60px;
             text-align: right;
         }
+        input[type=radio], input[type=checkbox] {
+            display: inline-block;
+            margin-right: 5px;
+        }
         #palette {
             line-height: 34px;
         }
@@ -130,10 +134,10 @@
             _IMSetDestination($dst, width, height);
             _IMClearFS();
         }
-        let IMQuantize = ($src, numberColors, $dst) => {
+        let IMQuantize = ($src, numberColors, colorspace, treedepth, dither, measure_error, $dst) => {
             const [ width, height ] = _IMSetSource($src);
             if (width === false) return;
-            _IMQuantize(width, height, numberColors, IMEnumColorspaces.indexOf('sRGB'), 1, false, false);
+            _IMQuantize(width, height, numberColors, colorspace, treedepth, dither, measure_error);
             _IMSetDestination($dst, width, height);
             _IMClearFS();
         }
@@ -190,7 +194,7 @@
             IMSketch($('#src'), $('#sketchRadius').val(), $('#sketchSigma').val(), $('#sketchAngle').val(), $('#sketched'));
         };
         let onQuantizeButton = () => {
-            IMQuantize($('#src'), $('#quantizeNumber').val(), $('#quantized'));
+            IMQuantize($('#src'), $('#quantizeNumber').val(), IMEnumColorspaces.indexOf($('#quantizeColorSpace').val()), $('#quantizeTreeDepth').val(), $('#quantizeDither').is(':checked'), $('#quantizeErrorCorrection').is(':checked'), $('#quantized'));
         };
         let onQuantizedLoaded = () => {
             let colors = IMListUniqueColors($('#quantized'));
@@ -294,6 +298,14 @@
                 if (dither === 'FloydSteinberg') $opt.prop('selected', true);
                 $ditherSelect.append($opt);
             }
+            let $quantizeColorSpace = $('#quantizeColorSpace');
+            for (const colorspace of IMEnumColorspaces) {
+                let $opt = $('<option />');
+                $opt.val(colorspace);
+                $opt.text(colorspace);
+                if (colorspace === 'sRGB') $opt.prop('selected', true);
+                $quantizeColorSpace.append($opt);
+            }
             $('#resizeButton').on('click', onResizeButton);
             $('#charcoalButton').on('click', onCharcoalButton);
             $('#sketchButton').on('click', onSketchButton);
@@ -339,7 +351,22 @@
         <p><label for="sketchRadius">Radius</label> <input id="sketchRadius" type="number" value="15" />, <label for="sketchSigma">Sigma</label> <input id="sketchSigma" type="number" value="10" />, <label for="sketchAngle">Angle</label> <input id="sketchAngle" type="number" value="-47" />, <button id="sketchButton" type="button">Apply</button></p>
         <p><img id="sketched" /></p>
         <h2>Quantize</h2>
-        <p><label for="quantizeNumber">Number of colors</label> <input id="quantizeNumber" type="number" value="8" />, <button id="quantizeButton" type="button">Apply</button></p>
+        <p><label for="quantizeNumber">Number of colors</label> <input id="quantizeNumber" type="number" value="8" />, 
+            <label for="quantizeColorSpace">Color space</label>  <select id="quantizeColorSpace"></select>,
+            <label for="quantizeTreeDepth">Tree depth</label>  <select id="quantizeTreeDepth">
+                <option value="0" selected>0</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+            </select>,
+            <input id="quantizeDither" type="checkbox" /><label for="quantizeDither">Hilbert Curve Dither</label>,
+            <input id="quantizeErrorCorrection" type="checkbox" /><label for="quantizeErrorCorrection">Error Correction</label>,
+            <button id="quantizeButton" type="button">Apply</button></p>
         <p><img id="quantized" /></p>
         <h3>Palette <span id="numberColors"></span></h3>
         <p id="palette"></p>
