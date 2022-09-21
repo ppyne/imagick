@@ -1,5 +1,7 @@
 # imagick
 
+<img src="ImageMagick_logo.svg" width="290" height="300" alt="Image Magick Logo" />
+
 Running ImageMagick wand library in WASM.
 
 Try it here [ppyne.github.io/imagick](https://ppyne.github.io/imagick/).
