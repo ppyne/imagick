@@ -39,6 +39,9 @@
             border-top: 1px solid white;
             line-height: 40px;
         }
+        #kernelPreview {
+            border: 1px solid silver;
+        }
     </style>
     <script src="imagick.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
@@ -73,6 +76,45 @@
             'hlines2x2': [true, 'hlines2x2', 'Horizontal Lines 2x2'],
             'hlines2x2a': [true, 'hlines2x2a', 'Horizontal Lines 2x2 (bounds adjusted)'],
             'hlines12x4': [true, 'hlines12x4', 'Horizontal Lines 12x4'],
+        };
+        const IMEnumMorphologies = [
+            'Correlate',
+            'Convolve',
+            'Dilate',
+            'Erode',
+            'Close',
+            'Open',
+            'DilateIntensity',
+            'ErodeIntensity',
+            'CloseIntensity',
+            'OpenIntensity',
+            'DilateI',
+            'ErodeI',
+            'CloseI',
+            'OpenI',
+            'Smooth',
+            'EdgeOut',
+            'EdgeIn',
+            'Edge',
+            'TopHat',
+            'BottomHat',
+            'Hmt',
+            'HitNMiss',
+            'HitAndMiss',
+            'Thinning',
+            'Thicken',
+            'Distance',
+            'IterativeDistance'
+        ];
+        const IMEnumKernels = {
+            Square: [1, 2, 3, 4],
+            Diamond: [1, 2, 3, 4],
+            Octagon: [1, 2, 3, 4, 5],
+            Disk: ['0.5', '1.0', '1.5', '2.0', '2.5', '2.9', '3.5', '3.9', '4.3', '4.5', '5.3'],
+            Plus: [1, 2, 3, 4],
+            Cross: [1, 2, 3, 4],
+            Ring: ['1', '1.5', '1,1.5', '2', '1,2', '1.5,2', '1,2.5', '1.5,2.5', '1.5,2.9', '2,2.5', '2,3.5', '2.5,3.5', '2.9,3.5', '3,3.5', '3,3.9', '2.5,4.3', '3.5,4.3', '3.9,4.5', '4,4.5', '4.3,4.5', '4.3,5.3'],
+            Rectangle: ["2x2", "3x3", "4x2", "4", "7x3", "7x1", "7x1+1+0", "7x1+6+0"],
         };
         let _IMSetSource = ($selector) => {
             let img = $selector.get(0);
@@ -184,6 +226,13 @@
             _IMSetDestination($dst, width, height);
             _IMClearFS();
         }
+        let IMMorphology = ($src, morphology, params, $dst) => {
+            const [ width, height ] = _IMSetSource($src);
+            if (width === false) return;
+            _IMMorphology(width, height, morphology, params);
+            _IMSetDestination($dst, width, height);
+            _IMClearFS();
+        }
         let onResizeButton = () => {
             IMResize($('#src'), $('#width').val(), $('#height').val(), IMEnumFilters.indexOf($('#filters').val()), $('#resized'));
         };
@@ -260,6 +309,28 @@
         let onSourceChange = () => {
             $('#src').attr('src', $('#source').val());
         };
+        let onKernelParamsChange = () => {
+            let $morphologyKernel = $('#morphologyKernel');
+            let $morphologyKernelParams = $('#morphologyKernelParams');
+            let $kernelPreview = $('#kernelPreview');
+            $kernelPreview.attr('src', 'kernpresets/kern_' + $morphologyKernel.val() + '-' + $morphologyKernelParams.val() + '.gif');
+        }
+        let onKernelChange = () => {
+            let $morphologyKernel = $('#morphologyKernel');
+            let $morphologyKernelParams = $('#morphologyKernelParams');
+            let k = $morphologyKernel.val();
+            $morphologyKernelParams.empty();
+            for (const params of IMEnumKernels[k]) {
+                let $opt = $('<option />');
+                $opt.val(params);
+                $opt.text(params);
+                $morphologyKernelParams.append($opt);
+            }
+            onKernelParamsChange();
+        }
+        let onMorphologyButton = () => {
+            IMMorphology($('#src'), $('#morphologyMethod').val(), $('#morphologyKernel').val() + ':' +  $('#morphologyKernelParams').val(), $('#morphologied'));
+        }
         let onIMReady = () => {
             _IMResize = Module.cwrap('_IMResize', null, ['number', 'number', 'number', 'number', 'number', 'number']);
             _IMCharcoal = Module.cwrap('_IMCharcoal', null, ['number', 'number', 'number', 'number']);
@@ -271,6 +342,7 @@
             _IMAutoGamma = Module.cwrap('_IMAutoGamma', null, ['number', 'number', 'number']);
             _IMContrast = Module.cwrap('_IMContrast', null, ['number', 'number', 'number']);
             _IMColors = Module.cwrap('_IMColors', null, ['number', 'number', 'number', 'number', 'string']);
+            _IMMorphology = Module.cwrap('_IMMorphology', null, ['number', 'number', 'string', 'string']);
             let $filters = $('#filters');
             const sortedFilters = [...IMEnumFilters].sort();
             for (const filter of sortedFilters) {
@@ -306,6 +378,27 @@
                 if (colorspace === 'sRGB') $opt.prop('selected', true);
                 $quantizeColorSpace.append($opt);
             }
+            let $morphologyMethod = $('#morphologyMethod');
+            for (const method of IMEnumMorphologies) {
+                let $opt = $('<option />');
+                $opt.val(method);
+                $opt.text(method);
+                if (method === 'Dilate') $opt.prop('selected', true);
+                $morphologyMethod.append($opt);
+            }
+            let $morphologyKernel = $('#morphologyKernel');
+            for (const kernel of Object.keys(IMEnumKernels)) {
+                let $opt = $('<option />');
+                $opt.val(kernel);
+                $opt.text(kernel);
+                $morphologyKernel.append($opt);
+                if (kernel === 'Octagon') {
+                    $opt.prop('selected', true);
+                    onKernelChange();
+                }
+            }
+            $morphologyKernel.on('change', onKernelChange);
+            $('#morphologyKernelParams').on('change', onKernelParamsChange);
             $('#resizeButton').on('click', onResizeButton);
             $('#charcoalButton').on('click', onCharcoalButton);
             $('#sketchButton').on('click', onSketchButton);
@@ -318,6 +411,7 @@
             $('#autolevelButton').on('click', onAutolevelButton);
             $('#autogammaButton').on('click', onAutogammaButton);
             $('#contrastButton').on('click', onContrastButton);
+            $('#morphologyButton').on('click', onMorphologyButton);
             $('#source').on('change', onSourceChange);
             $('main').show();
         };
@@ -389,6 +483,13 @@
         <h2>Contrast</h2>
         <p><input type="radio" id="contrastIncrease" name="contrastRadio" value="1" checked /><label for="contrastIncrease">Increase</label> <input type="radio" id="contrastDecrease" name="contrastRadio" value="0" /><label for="contrastDecrease">Decrease</label>, <button id="contrastButton" type="button">Apply</button></p>
         <p><img id="contrasted" /></p>
+        <h2>Morphology</h2>
+        <p><label for="morphologyMethod">Method</label> <select id="morphologyMethod"></select>,
+            <label for="morphologyKernel">Kernel</label> <select id="morphologyKernel"></select>,
+            <label for="morphologyKernelParams">Parameters</label> <select id="morphologyKernelParams"></select>,
+            <button id="morphologyButton" type="button">Apply</button></p>
+        <p>Kernel preview<br /><img id="kernelPreview" /></p>
+        <p><img id="morphologied" /></p>
     </main>
 </body>
 </html>

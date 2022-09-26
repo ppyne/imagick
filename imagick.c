@@ -689,12 +689,12 @@ void _IMColors(const unsigned int width, const unsigned int height, const unsign
         strsize,
         "-depth",
         "8",
-        "src.rgba",
+        (char *)SRC_FILE,
         "-dither",
         strdither,
         "-colors",
         strnumber,
-        "dst.rgba",
+        (char *)DST_FILE,
         NULL
     };
     char *cmdargsOrderedDither[] = {
@@ -703,16 +703,49 @@ void _IMColors(const unsigned int width, const unsigned int height, const unsign
         strsize,
         "-depth",
         "8",
-        "src.rgba",
+        (char *)SRC_FILE,
         "-ordered-dither",
         strdither,
         "-colors",
         strnumber,
-        "dst.rgba",
+        (char *)DST_FILE,
         NULL
     };
     if (!ordered_dither) cmdargs = cmdargsDither;
     else cmdargs = cmdargsOrderedDither;
+    MagickWandGenesis();
+    ImageInfo *info = AcquireImageInfo();
+    ExceptionInfo *e = AcquireExceptionInfo();
+    MagickBooleanType cmdres = MagickCommandGenesis(info, ConvertImageCommand, argcount, cmdargs, NULL, e);
+    if (cmdres == MagickFalse) console_error("An error occured while executing command.", "");
+    if (e->severity != UndefinedException) {
+        console_error("Reason: ", e->reason);
+        console_error("Description: ", e->description);
+    }
+    info=DestroyImageInfo(info);
+    e=DestroyExceptionInfo(e);
+    MagickWandTerminus();
+}
+
+void _IMMorphology(const unsigned int width, const unsigned int height, const char *morphology_name, const char *parameters) {
+    char strsize[64];
+    char morphology[64];
+    char params[64];
+    sprintf(strsize, "%dx%d", width, height);
+    sprintf(morphology, "%s", morphology_name);
+    sprintf(params, "%s", parameters);
+    int argcount = 8;
+    char *cmdargs[] = {
+        "convert",
+        "-size",
+        strsize,
+        (char *)SRC_FILE,
+        "-morphology",
+        morphology,
+        params,
+        (char *)DST_FILE,
+        NULL
+    };
     MagickWandGenesis();
     ImageInfo *info = AcquireImageInfo();
     ExceptionInfo *e = AcquireExceptionInfo();
