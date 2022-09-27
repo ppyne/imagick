@@ -5473,6 +5473,9 @@ var __IMMorphology = Module["__IMMorphology"] = createExportWrapper("_IMMorpholo
 var __IMSigmoidalContrast = Module["__IMSigmoidalContrast"] = createExportWrapper("_IMSigmoidalContrast");
 
 /** @type {function(...*):?} */
+var __IMCmdResize = Module["__IMCmdResize"] = createExportWrapper("_IMCmdResize");
+
+/** @type {function(...*):?} */
 var _main = Module["_main"] = createExportWrapper("main");
 
 /** @type {function(...*):?} */

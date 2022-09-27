@@ -162,6 +162,17 @@
                 _IMClearFS();
             }
         };
+        let IMCmdResize = ($src, width, height, filter, $dst) => {
+            const [ swidth, sheight ] = _IMSetSource($src);
+            if (swidth === false) return;
+            if (swidth == width && sheight == height) $dst.attr('src', $src.attr('src'));
+            else { 
+                if (filter === 'Default') filter = '';
+                _IMCmdResize(swidth, sheight, width, height, filter);
+                _IMSetDestination($dst, width, height);
+                _IMClearFS();
+            }
+        };
         let IMCharcoal = ($src, radius, sigma, $dst) => {
             const [ width, height ] = _IMSetSource($src);
             if (width === false) return;
@@ -241,7 +252,7 @@
             _IMClearFS();
         }
         let onResizeButton = () => {
-            IMResize($('#src'), $('#width').val(), $('#height').val(), IMEnumFilters.indexOf($('#filters').val()), $('#resized'));
+            IMCmdResize($('#src'), $('#width').val(), $('#height').val(), $('#filters').val(), $('#resized'));
         };
         let onCharcoalButton = () => {
             IMCharcoal($('#src'), $('#charcoalRadius').val(), $('#charcoalSigma').val(), $('#charcoaled'));
@@ -343,6 +354,7 @@
         }
         let onIMReady = () => {
             _IMResize = Module.cwrap('_IMResize', null, ['number', 'number', 'number', 'number', 'number', 'number']);
+            _IMCmdResize = Module.cwrap('_IMCmdResize', null, ['number', 'number', 'number', 'number', 'string']);
             _IMCharcoal = Module.cwrap('_IMCharcoal', null, ['number', 'number', 'number', 'number']);
             _IMSketch = Module.cwrap('_IMSketch', null, ['number', 'number', 'number', 'number', 'number']);
             _IMQuantize = Module.cwrap('_IMQuantize', null, ['number', 'number', 'number', 'number', 'number', 'number', 'number']);

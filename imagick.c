@@ -681,38 +681,21 @@ void _IMColors(const unsigned int width, const unsigned int height, const unsign
     sprintf(strdither, "%s", dither_name);
     storeThresholdsXml();
     putenv("MAGICK_CONFIGURE_PATH=/");
-    char **cmdargs;
     int argcount = 11;
-    char *cmdargsDither[] = {
+    char *cmdargs[] = {
         "convert",
         "-size",
         strsize,
         "-depth",
         "8",
         (char *)SRC_FILE,
-        "-dither",
+        ordered_dither?"-ordered-dither":"-dither",
         strdither,
         "-colors",
         strnumber,
         (char *)DST_FILE,
         NULL
     };
-    char *cmdargsOrderedDither[] = {
-        "convert",
-        "-size",
-        strsize,
-        "-depth",
-        "8",
-        (char *)SRC_FILE,
-        "-ordered-dither",
-        strdither,
-        "-colors",
-        strnumber,
-        (char *)DST_FILE,
-        NULL
-    };
-    if (!ordered_dither) cmdargs = cmdargsDither;
-    else cmdargs = cmdargsOrderedDither;
     MagickWandGenesis();
     ImageInfo *info = AcquireImageInfo();
     ExceptionInfo *e = AcquireExceptionInfo();
@@ -778,6 +761,55 @@ void _IMSigmoidalContrast(const unsigned int width, const unsigned int height, c
         (char *)DST_FILE,
         NULL
     };
+    MagickWandGenesis();
+    ImageInfo *info = AcquireImageInfo();
+    ExceptionInfo *e = AcquireExceptionInfo();
+    MagickBooleanType cmdres = MagickCommandGenesis(info, ConvertImageCommand, argcount, cmdargs, NULL, e);
+    if (cmdres == MagickFalse) console_error("An error occured while executing command.", "");
+    if (e->severity != UndefinedException) {
+        console_error("Reason: ", e->reason);
+        console_error("Description: ", e->description);
+    }
+    info=DestroyImageInfo(info);
+    e=DestroyExceptionInfo(e);
+    MagickWandTerminus();
+}
+
+void _IMCmdResize(const unsigned int width, const unsigned int height, const unsigned int dstWidth, const unsigned int dstHeight, const char *filter) {
+    char strsize[64];
+    char filter_name[64];
+    char params[64];
+    sprintf(strsize, "%dx%d", width, height);
+    sprintf(filter_name, "%s", filter);
+    sprintf(params, "%dx%d!", dstWidth, dstHeight);
+    char **cmdargs;
+    int argcount = 9;
+    char *cmdargsFilter[] = {
+        "convert",
+        "-size",
+        strsize,
+        (char *)SRC_FILE,
+        "-filter",
+        filter_name,
+        "-resize",
+        params,
+        (char *)DST_FILE,
+        NULL
+    };
+    char *cmdargsNoFilter[] = {
+        "convert",
+        "-size",
+        strsize,
+        (char *)SRC_FILE,
+        "-resize",
+        params,
+        (char *)DST_FILE,
+        NULL
+    };
+    if (strlen(filter_name) == 0) {
+        cmdargs = cmdargsNoFilter;
+        argcount = 7;
+    } else cmdargs = cmdargsFilter;
     MagickWandGenesis();
     ImageInfo *info = AcquireImageInfo();
     ExceptionInfo *e = AcquireExceptionInfo();
