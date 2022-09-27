@@ -760,6 +760,38 @@ void _IMMorphology(const unsigned int width, const unsigned int height, const ch
     MagickWandTerminus();
 }
 
+void _IMSigmoidalContrast(const unsigned int width, const unsigned int height, const bool decrease, const int contrast, const int mid_point) {
+    char strsize[64];
+    char command[64];
+    char params[64];
+    sprintf(strsize, "%dx%d", width, height);
+    sprintf(command, "%csigmoidal-contrast", decrease?'+':'-');
+    sprintf(params, "%dx%d%%", contrast, mid_point);
+    int argcount = 7;
+    char *cmdargs[] = {
+        "convert",
+        "-size",
+        strsize,
+        (char *)SRC_FILE,
+        command,
+        params,
+        (char *)DST_FILE,
+        NULL
+    };
+    MagickWandGenesis();
+    ImageInfo *info = AcquireImageInfo();
+    ExceptionInfo *e = AcquireExceptionInfo();
+    MagickBooleanType cmdres = MagickCommandGenesis(info, ConvertImageCommand, argcount, cmdargs, NULL, e);
+    if (cmdres == MagickFalse) console_error("An error occured while executing command.", "");
+    if (e->severity != UndefinedException) {
+        console_error("Reason: ", e->reason);
+        console_error("Description: ", e->description);
+    }
+    info=DestroyImageInfo(info);
+    e=DestroyExceptionInfo(e);
+    MagickWandTerminus();
+}
+
 int main() {
     is_ready();
     return 0;

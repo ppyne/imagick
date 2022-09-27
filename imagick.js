@@ -5470,6 +5470,9 @@ var __IMColors = Module["__IMColors"] = createExportWrapper("_IMColors");
 var __IMMorphology = Module["__IMMorphology"] = createExportWrapper("_IMMorphology");
 
 /** @type {function(...*):?} */
+var __IMSigmoidalContrast = Module["__IMSigmoidalContrast"] = createExportWrapper("_IMSigmoidalContrast");
+
+/** @type {function(...*):?} */
 var _main = Module["_main"] = createExportWrapper("main");
 
 /** @type {function(...*):?} */
@@ -5513,8 +5516,8 @@ var dynCall_iijji = Module["dynCall_iijji"] = createExportWrapper("dynCall_iijji
 /** @type {function(...*):?} */
 var dynCall_jiji = Module["dynCall_jiji"] = createExportWrapper("dynCall_jiji");
 
-var ___start_em_js = Module['___start_em_js'] = 574784;
-var ___stop_em_js = Module['___stop_em_js'] = 575952;
+var ___start_em_js = Module['___start_em_js'] = 574816;
+var ___stop_em_js = Module['___stop_em_js'] = 575984;
 
 
 

@@ -219,6 +219,13 @@
             _IMSetDestination($dst, width, height);
             _IMClearFS();
         }
+        let IMSigmoidalContrast = ($src, decrease, contrast, midPoint, $dst) => {
+            const [ width, height ] = _IMSetSource($src);
+            if (width === false) return;
+            _IMSigmoidalContrast(width, height, decrease, contrast, midPoint);
+            _IMSetDestination($dst, width, height);
+            _IMClearFS();
+        }
         let IMColors = ($src, numberColors, dither, $dst) => {
             const [ width, height ] = _IMSetSource($src);
             if (width === false) return;
@@ -306,6 +313,9 @@
             let increase = $('input[name=contrastRadio]:checked').val();
             IMContrast($('#src'), $('#contrasted'), increase);
         };
+        let onSigmoidalContrastButton = () => {
+            IMSigmoidalContrast($('#src'), $('input[name=sigmoidalContrastRadio]:checked').val()==1?0:1, $('#sigmoidalContrast').val(), $('#sigmoidalContrastMidPoint').val(), $('#sigmoidalContrasted'));
+        };
         let onSourceChange = () => {
             $('#src').attr('src', $('#source').val());
         };
@@ -341,6 +351,7 @@
             _IMAutoLevel = Module.cwrap('_IMAutoLevel', null, ['number', 'number', 'number']);
             _IMAutoGamma = Module.cwrap('_IMAutoGamma', null, ['number', 'number', 'number']);
             _IMContrast = Module.cwrap('_IMContrast', null, ['number', 'number', 'number']);
+            _IMSigmoidalContrast = Module.cwrap('_IMSigmoidalContrast', null, ['number', 'number', 'number', 'number', 'number']);
             _IMColors = Module.cwrap('_IMColors', null, ['number', 'number', 'number', 'number', 'string']);
             _IMMorphology = Module.cwrap('_IMMorphology', null, ['number', 'number', 'string', 'string']);
             let $filters = $('#filters');
@@ -411,6 +422,7 @@
             $('#autolevelButton').on('click', onAutolevelButton);
             $('#autogammaButton').on('click', onAutogammaButton);
             $('#contrastButton').on('click', onContrastButton);
+            $('#sigmoidalContrastButton').on('click', onSigmoidalContrastButton);
             $('#morphologyButton').on('click', onMorphologyButton);
             $('#source').on('change', onSourceChange);
             $('main').show();
@@ -483,6 +495,9 @@
         <h2>Contrast</h2>
         <p><input type="radio" id="contrastIncrease" name="contrastRadio" value="1" checked /><label for="contrastIncrease">Increase</label> <input type="radio" id="contrastDecrease" name="contrastRadio" value="0" /><label for="contrastDecrease">Decrease</label>, <button id="contrastButton" type="button">Apply</button></p>
         <p><img id="contrasted" /></p>
+        <h2>Sigmoidal contrast</h2>
+        <p><input type="radio" id="sigmoidalContrastIncrease" name="sigmoidalContrastRadio" value="1" checked /><label for="sigmoidalContrastIncrease">Increase</label> <input type="radio" id="sigmoidalContrastDecrease" name="sigmoidalContrastRadio" value="0" /><label for="sigmoidalContrastDecrease">Decrease</label>, <label for="sigmoidalContrast">Contrast</label> <input id="sigmoidalContrast" type="number" value="3" />/20, <label for="sigmoidalContrastMidPoint">Mid point</label> <input id="sigmoidalContrastMidPoint" type="number" value="50" />%, <button id="sigmoidalContrastButton" type="button">Apply</button></p>
+        <p><img id="sigmoidalContrasted" /></p>
         <h2>Morphology</h2>
         <p><label for="morphologyMethod">Method</label> <select id="morphologyMethod"></select>,
             <label for="morphologyKernel">Kernel</label> <select id="morphologyKernel"></select>,
