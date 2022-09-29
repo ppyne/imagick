@@ -242,6 +242,4 @@ let _onIMReady = () => {
     _IMMorphology = Module.cwrap('_IMMorphology', null, ['number', 'number', 'string', 'string']);
 };
 
-$(() => {
-    $(window).on('IMReady', _onIMReady);
-});
+$(window).on('IMReady', _onIMReady);
