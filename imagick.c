@@ -223,6 +223,60 @@ void _IMListUniqueColors(const unsigned int width, const unsigned int height) {
     } else console_error("Error while opening \"dst.json\" for writing: ", strerror(errno));
 }
 
+void _IMQuantizeAndListUniqueColors(const unsigned int width, const unsigned int height, const size_t number_colors) {
+    MagickBooleanType status;
+    MagickWand *magick_wand;
+    PixelIterator *iter;
+    PixelWand **row;
+    MagickPixelPacket pixel;
+    size_t rows, cols, y, x;
+    FILE *output;
+    bool first = true;
+    char buffer[32];
+
+    if ((output = fopen("dst.json", "w")) != NULL) {
+        fwrite((void *)"[", 1, 1, output);
+        MagickWandGenesis();
+        magick_wand = NewMagickWand();
+        MagickSetSize(magick_wand, width, height);
+        status = MagickReadImage(magick_wand, SRC_FILE);
+        if (status == MagickFalse) {
+            fwrite((void *)"]", 1, 1, output);
+            fclose(output);
+            strwanderror(magick_wand);
+        } else {
+
+            MagickResetIterator(magick_wand);
+            while (MagickNextImage(magick_wand) != MagickFalse) MagickQuantizeImages(magick_wand, number_colors, sRGBColorspace, 0, 0, 0);
+
+            MagickResetIterator(magick_wand);
+            while (MagickNextImage(magick_wand) != MagickFalse) MagickUniqueImageColors(magick_wand);
+            while (MagickNextImage(magick_wand) != MagickFalse) {
+                MagickGetSize(magick_wand, &cols, &rows);
+                iter = NewPixelIterator(magick_wand);
+                if (IsPixelIterator(iter) != MagickFalse) {
+                    for (y = 0; y < rows; y++) {
+                        row = PixelGetNextIteratorRow(iter, &cols);
+                        for (x = 0; x < cols; ++x) {
+                            PixelGetMagickColor(row[x], &pixel);
+                            sprintf(buffer, "[%d,%d,%d]", (unsigned char)pixel.red, (unsigned char)pixel.green, (unsigned char)pixel.blue);
+                            if (first == true) first = false;
+                            else fwrite((void *)",", 1, 1, output);
+                            fwrite((void *)buffer, strlen(buffer), 1, output);
+                        }
+                        PixelSyncIterator(iter);
+                    }
+                    fwrite((void *)"]", 1, 1, output);
+                    fclose(output);
+                    iter = DestroyPixelIterator(iter);
+                }
+            }
+            magick_wand = DestroyMagickWand(magick_wand);
+            MagickWandTerminus();
+        }
+    } else console_error("Error while opening \"dst.json\" for writing: ", strerror(errno));
+}
+
 /* channel types in magick/magick-type.h */
 void _IMAutoLevel(const unsigned int width, const unsigned int height, const int channels) {
     MagickBooleanType status;

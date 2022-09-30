@@ -60,6 +60,22 @@
         let onQuantizeButton = () => {
             IMQuantize($('#src'), $('#quantizeNumber').val(), IMEnumColorspaces.indexOf($('#quantizeColorSpace').val()), $('#quantizeTreeDepth').val(), $('#quantizeDither').is(':checked'), $('#quantizeErrorCorrection').is(':checked'), $('#quantized'));
         };
+        let onQuantizeListButton = () => {
+            let colors = IMQuantizeAndListUniqueColors($('#src'), $('#quantizeListNumber').val());
+            if (!Array.isArray(colors)) return;
+            $('#quantizeListNumberColors').text('('+colors.length+' color'+(colors.length>1?'s':'')+')');
+            let $container = $('#quantizeListPalette');
+            $container.empty();
+            for (color of colors) {
+                let $color = $('<span class="color" />');
+                let $square = $('<span class="square" />');
+                let rgb_string = 'rgb('+color.join(',')+')';
+                $square.css('background-color', rgb_string);
+                $color.text(rgb_string);
+                $color.prepend($square);
+                $container.append($color);
+            }
+        };
         let onQuantizedLoaded = () => {
             let colors = IMListUniqueColors($('#quantized'));
             if (!Array.isArray(colors)) return;
@@ -211,6 +227,7 @@
             $('#sketchButton').on('click', onSketchButton);
             $('#quantized').on('load', onQuantizedLoaded);
             $('#quantizeButton').on('click', onQuantizeButton);
+            $('#quantizeListButton').on('click', onQuantizeListButton);
             $('#colored').on('load', onColoredLoaded);
             $('#colorButton').on('click', onColorButton);
             $('#posterized').on('load', onPosterizedLoaded);
@@ -272,6 +289,11 @@
         <p><img id="quantized" /></p>
         <h3>Palette <span id="numberColors"></span></h3>
         <p id="palette"></p>
+        <h2>Quantize and list unique colors</h2>
+        <p><label for="quantizeListNumber">Number of colors</label> <input id="quantizeListNumber" type="number" value="8" />,
+            <button id="quantizeListButton" type="button">Apply</button></p>
+        <h3>Palette <span id="quantizeListNumberColors"></span></h3>
+        <p id="quantizeListPalette"></p>
         <h2>Command "-colors n"</h2>
         <p><label for="colorDither">Dither</label> <select id="colorDither"></select>, <label for="colorNumber">Number of colors</label> <input id="colorNumber" type="number" value="8" />, <button id="colorButton" type="button">Apply</button></p>
         <p><img id="colored" /></p>
