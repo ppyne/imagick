@@ -42,6 +42,14 @@
         #kernelPreview {
             border: 1px solid silver;
         }
+        .fixedWidth {
+            display: inline-block;
+            width: 50px;
+            text-align: right;
+            background-color: white;
+            color: black;
+            padding: 1px 3px;
+        }
     </style>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
     <script src="imagick.js"></script>
@@ -165,6 +173,9 @@
         let onMorphologyButton = () => {
             IMMorphology($('#src'), $('#morphologyMethod').val(), $('#morphologyKernel').val() + ':' +  $('#morphologyKernelParams').val(), $('#morphologied'));
         }
+        let onExposureButton = () => {
+            IMExposure($('#src'), parseFloat($('#exposureStops').val()), parseFloat($('#exposureOffset').val()), parseFloat($('#exposureGamma').val()), $('#exposured'));
+        }
         let onIMReady = () => {
             let $filters = $('#filters');
             const sortedFilters = [...IMEnumFilters].sort();
@@ -220,6 +231,16 @@
                     onKernelChange();
                 }
             }
+            $('#exposureStops').on('input', () => {
+                $('#exposureStopsDisplay').text($('#exposureStops').val());
+            });
+            $('#exposureOffset').on('input', () => {
+                $('#exposureOffsetDisplay').text($('#exposureOffset').val());
+            });
+            $('#exposureGamma').on('input', () => {
+                $('#exposureGammaDisplay').text($('#exposureGamma').val());
+            });
+            $('#exposureButton').on('click', onExposureButton);
             $morphologyKernel.on('change', onKernelChange);
             $('#morphologyKernelParams').on('change', onKernelParamsChange);
             $('#resizeButton').on('click', onResizeButton);
@@ -323,6 +344,14 @@
             <button id="morphologyButton" type="button">Apply</button></p>
         <p>Kernel preview<br /><img id="kernelPreview" /></p>
         <p><img id="morphologied" /></p>
+        <h2>Exposure</h2>
+        <p>
+            <label for="exposureStops">Exposure</label> <input id="exposureStops" type="range" value="1" min="-20" max="20" step="0.01" /> <span class="fixedWidth" id="exposureStopsDisplay">1</span>,
+            <label for="exposureOffset">Offset</label> <input id="exposureOffset" type="range" value="0" min="-0.5" max="0.5" step="0.01" /> <span class="fixedWidth" id="exposureOffsetDisplay">0</span>,
+            <label for="exposureGamma">Gamma</label> <input id="exposureGamma" type="range" value="1" min="0.01" max="9.99" step="0.01" /> <span class="fixedWidth" id="exposureGammaDisplay">1</span>,
+            <button id="exposureButton" type="button">Apply</button>
+            <p><img id="exposured" /></p>
+        </p>
     </main>
 </body>
 </html>

@@ -5,6 +5,7 @@
 #include <errno.h>
 #include <stdbool.h>
 #include <unistd.h>
+#include <math.h>
 #include <wand/MagickWand.h>
 
 const char SRC_FILE[] = "src.rgba";
@@ -864,6 +865,46 @@ void _IMCmdResize(const unsigned int width, const unsigned int height, const uns
         cmdargs = cmdargsNoFilter;
         argcount = 7;
     } else cmdargs = cmdargsFilter;
+    MagickWandGenesis();
+    ImageInfo *info = AcquireImageInfo();
+    ExceptionInfo *e = AcquireExceptionInfo();
+    MagickBooleanType cmdres = MagickCommandGenesis(info, ConvertImageCommand, argcount, cmdargs, NULL, e);
+    if (cmdres == MagickFalse) console_error("An error occured while executing command.", "");
+    if (e->severity != UndefinedException) {
+        console_error("Reason: ", e->reason);
+        console_error("Description: ", e->description);
+    }
+    info=DestroyImageInfo(info);
+    e=DestroyExceptionInfo(e);
+    MagickWandTerminus();
+}
+
+void _IMExposure(const unsigned int width, const unsigned int height, const double stops, const double offset, const double gamma) {
+    char strsize[64];
+    char params[64];
+    char _gamma[64];
+    double gain = pow(2.0, stops);
+    sprintf(strsize, "%dx%d", width, height);
+    sprintf(params, "%f,%f", gain, offset);
+    sprintf(_gamma, "%f", gamma);
+    int argcount = 14;
+    char *cmdargs[] = {
+        "convert",
+        "-size",
+        strsize,
+        (char *)SRC_FILE,
+        "-colorspace",
+        "RGB",
+        "-function",
+        "polynomial",
+        params,
+        "-gamma",
+        _gamma,
+        "-colorspace",
+        "sRGB",
+        (char *)DST_FILE,
+        NULL
+    };
     MagickWandGenesis();
     ImageInfo *info = AcquireImageInfo();
     ExceptionInfo *e = AcquireExceptionInfo();
