@@ -176,6 +176,9 @@
         let onExposureButton = () => {
             IMExposure($('#src'), parseFloat($('#exposureStops').val()), parseFloat($('#exposureOffset').val()), parseFloat($('#exposureGamma').val()), $('#exposured'));
         }
+        let onGlowButton = () => {
+            IMGlow($('#src'), parseFloat($('#glowAmount').val()), parseInt($('#glowSoftening').val()), $('#glowed'));
+        }
         let onIMReady = () => {
             let $filters = $('#filters');
             const sortedFilters = [...IMEnumFilters].sort();
@@ -240,6 +243,13 @@
             $('#exposureGamma').on('input', () => {
                 $('#exposureGammaDisplay').text($('#exposureGamma').val());
             });
+            $('#glowAmount').on('input', () => {
+                $('#glowAmountDisplay').text($('#glowAmount').val());
+            });
+            $('#glowSoftening').on('input', () => {
+                $('#glowSofteningDisplay').text($('#glowSoftening').val());
+            });
+            $('#glowButton').on('click', onGlowButton);
             $('#exposureButton').on('click', onExposureButton);
             $morphologyKernel.on('change', onKernelChange);
             $('#morphologyKernelParams').on('change', onKernelParamsChange);
@@ -352,6 +362,11 @@
             <button id="exposureButton" type="button">Apply</button>
             <p><img id="exposured" /></p>
         </p>
+        <h2>Glow</h2>
+        <label for="glowAmount">Amount</label> <input id="glowAmount" type="range" value="1.5" min="1" max="2" step="0.01" /> <span class="fixedWidth" id="glowAmountDisplay">1.5</span>,
+        <label for="glowSoftening">Softening</label> <input id="glowSoftening" type="range" value="0" min="0" max="150" step="1" /> <span class="fixedWidth" id="glowSofteningDisplay">0</span>,
+        <button id="glowButton" type="button">Apply</button>
+        <p><img id="glowed" /></p>
     </main>
 </body>
 </html>

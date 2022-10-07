@@ -919,6 +919,64 @@ void _IMExposure(const unsigned int width, const unsigned int height, const doub
     MagickWandTerminus();
 }
 
+void _IMGlow(const unsigned int width, const unsigned int height, const double amount, const unsigned int softening) {
+    char strsize[64];
+    char _amount[64];
+    char sigma[64];
+    sprintf(strsize, "%dx%d", width, height);
+    if (softening > 0) sprintf(_amount, "%f", amount - 1.0);
+    else sprintf(_amount, "%f", amount);
+    if (softening > 0) sprintf(sigma, "0x%f", (double)softening / 3.0);
+    int argcount = 8;
+    char **cmdargs;
+    char *cmdargsNoSoftening[] = {
+        "convert",
+        "-size",
+        strsize,
+        (char *)SRC_FILE,
+        "-evaluate",
+        "multiply",
+        _amount,
+        (char *)DST_FILE,
+        NULL
+    };
+    char *cmdargsSoftening[] = {
+        "convert",
+        "-size",
+        strsize,
+        (char *)SRC_FILE,
+        "(",
+        "+clone",
+        "-evaluate",
+        "multiply",
+        _amount,
+        "-blur",
+        sigma,
+        ")",
+        "-compose",
+        "plus",
+        "-composite",
+        (char *)DST_FILE,
+        NULL
+    };
+    if (softening != 0.0) {
+        cmdargs = cmdargsSoftening;
+        argcount = 16;
+    } else cmdargs = cmdargsNoSoftening;
+    MagickWandGenesis();
+    ImageInfo *info = AcquireImageInfo();
+    ExceptionInfo *e = AcquireExceptionInfo();
+    MagickBooleanType cmdres = MagickCommandGenesis(info, ConvertImageCommand, argcount, cmdargs, NULL, e);
+    if (cmdres == MagickFalse) console_error("An error occured while executing command.", "");
+    if (e->severity != UndefinedException) {
+        console_error("Reason: ", e->reason);
+        console_error("Description: ", e->description);
+    }
+    info=DestroyImageInfo(info);
+    e=DestroyExceptionInfo(e);
+    MagickWandTerminus();
+}
+
 int main() {
     is_ready();
     return 0;

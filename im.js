@@ -243,6 +243,14 @@ let IMExposure = ($src, stops, offset, gamma, $dst) => {
     _IMClearFS();
 };
 
+let IMGlow = ($src, amount, softening, $dst) => {
+    const [ width, height ] = _IMSetSource($src);
+    if (width === false) return;
+    _IMGlow(width, height, amount, softening);
+    _IMSetDestination($dst, width, height);
+    _IMClearFS();
+};
+
 let _onIMReady = () => {
     _IMResize = Module.cwrap('_IMResize', null, ['number', 'number', 'number', 'number', 'number', 'number']);
     _IMCmdResize = Module.cwrap('_IMCmdResize', null, ['number', 'number', 'number', 'number', 'string']);
@@ -259,6 +267,7 @@ let _onIMReady = () => {
     _IMColors = Module.cwrap('_IMColors', null, ['number', 'number', 'number', 'number', 'string']);
     _IMMorphology = Module.cwrap('_IMMorphology', null, ['number', 'number', 'string', 'string']);
     _IMExposure = Module.cwrap('_IMExposure', null, ['number', 'number', 'number', 'number', 'number']);
+    _IMGlow = Module.cwrap('_IMGlow', null, ['number', 'number', 'number', 'number']);
 };
 
 $(window).on('IMReady', _onIMReady);

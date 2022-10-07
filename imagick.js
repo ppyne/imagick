@@ -5482,6 +5482,9 @@ var __IMCmdResize = Module["__IMCmdResize"] = createExportWrapper("_IMCmdResize"
 var __IMExposure = Module["__IMExposure"] = createExportWrapper("_IMExposure");
 
 /** @type {function(...*):?} */
+var __IMGlow = Module["__IMGlow"] = createExportWrapper("_IMGlow");
+
+/** @type {function(...*):?} */
 var _main = Module["_main"] = createExportWrapper("main");
 
 /** @type {function(...*):?} */
@@ -5525,8 +5528,8 @@ var dynCall_iijji = Module["dynCall_iijji"] = createExportWrapper("dynCall_iijji
 /** @type {function(...*):?} */
 var dynCall_jiji = Module["dynCall_jiji"] = createExportWrapper("dynCall_jiji");
 
-var ___start_em_js = Module['___start_em_js'] = 574880;
-var ___stop_em_js = Module['___stop_em_js'] = 576048;
+var ___start_em_js = Module['___start_em_js'] = 574896;
+var ___stop_em_js = Module['___stop_em_js'] = 576064;
 
 
 
