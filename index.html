@@ -179,6 +179,16 @@
         let onGlowButton = () => {
             IMGlow($('#src'), parseFloat($('#glowAmount').val()), parseInt($('#glowSoftening').val()), $('#glowed'));
         }
+        let onWatercolorButton = () => {
+            IMWatercolor(
+                $('#src'),
+                parseInt($('#watercolorSmoothing').val()),
+                parseFloat($('#watercolorEdge').val()),
+                parseInt($('#watercolorMixing').val()),
+                parseFloat($('#watercolorContrast').val()),
+                $('#watercolored')
+            );
+        }
         let onIMReady = () => {
             let $filters = $('#filters');
             const sortedFilters = [...IMEnumFilters].sort();
@@ -249,6 +259,19 @@
             $('#glowSoftening').on('input', () => {
                 $('#glowSofteningDisplay').text($('#glowSoftening').val());
             });
+            $('#watercolorSmoothing').on('input', () => {
+                $('#watercolorSmoothingDisplay').text($('#watercolorSmoothing').val());
+            });
+            $('#watercolorEdge').on('input', () => {
+                $('#watercolorEdgeDisplay').text($('#watercolorEdge').val());
+            });
+            $('#watercolorMixing').on('input', () => {
+                $('#watercolorMixingDisplay').text($('#watercolorMixing').val());
+            });
+            $('#watercolorContrast').on('input', () => {
+                $('#watercolorContrastDisplay').text($('#watercolorContrast').val());
+            });
+            $('#watercolorButton').on('click', onWatercolorButton);
             $('#glowButton').on('click', onGlowButton);
             $('#exposureButton').on('click', onExposureButton);
             $morphologyKernel.on('change', onKernelChange);
@@ -289,6 +312,7 @@
             <option value="wellexposed.png">wellexposed.png</option>
             <option value="overexposed.png">overexposed.png</option>
             <option value="underexposed.png">underexposed.png</option>
+            <option value="tulips.jpg">tulips.jpg</option>
         </select></p>
         <p><img id="src" src="peppers.png" /></p>
         <h2>Resize</h2>
@@ -369,6 +393,14 @@
         <label for="glowSoftening">Softening</label> <input id="glowSoftening" type="range" value="0" min="0" max="150" step="1" /> <span class="fixedWidth" id="glowSofteningDisplay">0</span>,
         <button id="glowButton" type="button">Apply</button>
         <p><img id="glowed" /></p>
+        <h2>Watercolor</h2>
+        <p>According to Fred Weinhaus</p>
+        <label for="watercolorSmoothing">Smoothing</label> <input id="watercolorSmoothing" type="range" value="0" min="0" max="20" step="1" /> <span class="fixedWidth" id="watercolorSmoothingDisplay">0</span>,
+        <label for="watercolorEdge">Edge</label> <input id="watercolorEdge" type="range" value="5" min="1" max="20" step="0.01" /> <span class="fixedWidth" id="watercolorEdgeDisplay">5</span>,
+        <label for="watercolorMixing">Mixing</label> <input id="watercolorMixing" type="range" value="33" min="0" max="100" step="1" /> <span class="fixedWidth" id="watercolorMixingDisplay">33</span>,
+        <label for="watercolorContrast">Contrast</label> <input id="watercolorContrast" type="range" value="0" min="0" max="30" step="0.01" /> <span class="fixedWidth" id="watercolorContrastDisplay">0</span>,
+        <button id="watercolorButton" type="button">Apply</button>
+        <p><img id="watercolored" /></p>
     </main>
 </body>
 </html>

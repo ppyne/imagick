@@ -64,6 +64,52 @@ EM_JS(void, console_log_len, (size_t len), {
         description = (char *)MagickRelinquishMemory(description); \
 }
 
+#define ARG_MAX_SIZE 64
+
+typedef struct _Arguments {
+	size_t max_size;
+	int argc;
+	char **argv;
+} Arguments;
+
+Arguments *newArguments(size_t size) {
+	Arguments *args = (Arguments *)malloc(sizeof(Arguments));
+	args->argv = (char **)malloc((size + 1) * sizeof(char **));
+	for (int i = 0; i < size + 1; i++) args->argv[i] = NULL;
+	args->argc = 0;
+	args->max_size = size;
+	return args;
+}
+
+void deleteArguments(Arguments *args) {
+	for (int i = 0; i < args->argc; i++) if (args->argv[i] != NULL) free(args->argv[i]);
+	free(args->argv);
+	free(args);
+}
+
+void appendArgument(Arguments *args, const char *argument) {
+	if (args->argc + 1 > args->max_size) return;
+	int index = args->argc;
+	args->argc++;
+	args->argv[index] = (char *)malloc(ARG_MAX_SIZE * sizeof(char *));
+	if (strlen(argument) < ARG_MAX_SIZE) strcpy(args->argv[index], argument);
+	else {
+		strncpy(args->argv[index], argument, ARG_MAX_SIZE - 1);
+		args->argv[index][ARG_MAX_SIZE - 1] = '\0';
+	}
+}
+
+void debugArguments(const Arguments *args) {
+	int i;
+	for (i = 0; i < args->argc; i++) printf("%d:\"%s\" ", i, args->argv[i]);
+	printf("%d:\"%s\"\n", i+1, args->argv[i+1]);
+}
+
+void printArguments(const Arguments *args) {
+	for (int i = 0; i < args->argc; i++) printf("\"%s\" ", args->argv[i]);
+    printf("\n");
+}
+
 void _IMResize(const unsigned int srcWidth, const unsigned int srcHeight, const unsigned int dstWidth, const unsigned int dstHeight, const int filter, const double blur) {
     MagickBooleanType status;
     MagickWand *magick_wand;
@@ -975,6 +1021,112 @@ void _IMGlow(const unsigned int width, const unsigned int height, const double a
     info=DestroyImageInfo(info);
     e=DestroyExceptionInfo(e);
     MagickWandTerminus();
+}
+
+void _IMSobel(const unsigned int width, const unsigned int height) {
+    Arguments *args = newArguments(120);
+    appendArgument(args, "convert");
+    appendArgument(args, "-size");
+    char _size[64];
+    sprintf(_size, "%dx%d", width, height);
+    appendArgument(args, _size);
+    appendArgument(args, (char *)SRC_FILE);
+    appendArgument(args, "-channel");
+    appendArgument(args, "rgb");
+    appendArgument(args, "-define");
+    appendArgument(args, "convolve:scale=!");
+    appendArgument(args, "-define");
+    appendArgument(args, "morphology:compose=Lighten");
+    appendArgument(args, "-morphology");
+    appendArgument(args, "Convolve");
+    appendArgument(args, "Sobel:>");
+    appendArgument(args, (char *)DST_FILE);
+    MagickWandGenesis();
+    ImageInfo *info = AcquireImageInfo();
+    ExceptionInfo *e = AcquireExceptionInfo();
+    MagickBooleanType cmdres = MagickCommandGenesis(info, ConvertImageCommand, args->argc, args->argv, NULL, e);
+    if (cmdres == MagickFalse) console_error("An error occured while executing command.", "");
+    if (e->severity != UndefinedException) {
+        console_error("Reason: ", e->reason);
+        console_error("Description: ", e->description);
+    }
+    info=DestroyImageInfo(info);
+    e=DestroyExceptionInfo(e);
+    MagickWandTerminus();
+    deleteArguments(args);
+}
+
+void _IMWatercolor(const unsigned int width, const unsigned int height, const unsigned int smoothing, const double edge, const unsigned int mixing, const double contrast) {
+    Arguments *args = newArguments(42);
+    appendArgument(args, "convert");
+    appendArgument(args, "-size");
+    char _size[64];
+    sprintf(_size, "%dx%d", width, height);
+    appendArgument(args, _size);
+    appendArgument(args, (char *)SRC_FILE);
+    appendArgument(args, "-channel");
+    appendArgument(args, "rgb");
+    if (smoothing != 0) {
+        appendArgument(args, "-mean-shift");
+        char _smoothing[64];
+        sprintf(_smoothing, "%dx%d+10%%", smoothing, smoothing);
+        appendArgument(args, _smoothing);
+    }
+    if (contrast != 0.0) {
+        appendArgument(args, "-sigmoidal-contrast");
+        char _contrast[64];
+        sprintf(_contrast, "%fx50%%", contrast);
+        appendArgument(args, _contrast);
+    }
+    appendArgument(args, "(");
+    appendArgument(args, "-clone");
+    appendArgument(args, "0");
+    appendArgument(args, "-define");
+    appendArgument(args, "convolve:scale=!");
+    appendArgument(args, "-define");
+    appendArgument(args, "morphology:compose=Lighten");
+    appendArgument(args, "-morphology");
+    appendArgument(args, "Convolve");
+    appendArgument(args, "Sobel:>");
+    appendArgument(args, "-negate");
+    appendArgument(args, "-evaluate");
+    appendArgument(args, "pow");
+    char _edge[64];
+    sprintf(_edge, "%f", edge);
+    appendArgument(args, _edge);
+    appendArgument(args, ")");
+    appendArgument(args, "(");
+    appendArgument(args, "-clone");
+    appendArgument(args, "0");
+    appendArgument(args, "-clone");
+    appendArgument(args, "1");
+    appendArgument(args, "-compose");
+    appendArgument(args, "luminize");
+    appendArgument(args, "-composite");
+    appendArgument(args, ")");
+    appendArgument(args, "-delete");
+    appendArgument(args, "1");
+    appendArgument(args, "-define");
+    char _mixing[64];
+    sprintf(_mixing, "compose:args=%d", mixing);
+    appendArgument(args, _mixing);
+    appendArgument(args, "-compose");
+    appendArgument(args, "blend");
+    appendArgument(args, "-composite");
+    appendArgument(args, (char *)DST_FILE);
+    MagickWandGenesis();
+    ImageInfo *info = AcquireImageInfo();
+    ExceptionInfo *e = AcquireExceptionInfo();
+    MagickBooleanType cmdres = MagickCommandGenesis(info, ConvertImageCommand, args->argc, args->argv, NULL, e);
+    if (cmdres == MagickFalse) console_error("An error occured while executing command.", "");
+    if (e->severity != UndefinedException) {
+        console_error("Reason: ", e->reason);
+        console_error("Description: ", e->description);
+    }
+    info=DestroyImageInfo(info);
+    e=DestroyExceptionInfo(e);
+    MagickWandTerminus();
+    deleteArguments(args);
 }
 
 int main() {

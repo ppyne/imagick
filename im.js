@@ -251,6 +251,22 @@ let IMGlow = ($src, amount, softening, $dst) => {
     _IMClearFS();
 };
 
+let IMSobel = ($src, $dst) => {
+    const [ width, height ] = _IMSetSource($src);
+    if (width === false) return;
+    _IMSobel(width, height);
+    _IMSetDestination($dst, width, height);
+    _IMClearFS();
+};
+
+let IMWatercolor = ($src, smoothing, edge, mixing, contrast, $dst) => {
+    const [ width, height ] = _IMSetSource($src);
+    if (width === false) return;
+    _IMWatercolor(width, height, smoothing, edge, mixing, contrast);
+    _IMSetDestination($dst, width, height);
+    _IMClearFS();
+};
+
 let _onIMReady = () => {
     _IMResize = Module.cwrap('_IMResize', null, ['number', 'number', 'number', 'number', 'number', 'number']);
     _IMCmdResize = Module.cwrap('_IMCmdResize', null, ['number', 'number', 'number', 'number', 'string']);
@@ -268,6 +284,8 @@ let _onIMReady = () => {
     _IMMorphology = Module.cwrap('_IMMorphology', null, ['number', 'number', 'string', 'string']);
     _IMExposure = Module.cwrap('_IMExposure', null, ['number', 'number', 'number', 'number', 'number']);
     _IMGlow = Module.cwrap('_IMGlow', null, ['number', 'number', 'number', 'number']);
+    _IMSobel = Module.cwrap('_IMSobel', null, ['number', 'number']);
+    _IMWatercolor = Module.cwrap('_IMWatercolor', null, ['number', 'number', 'number', 'number', 'number', 'number']);
 };
 
 $(window).on('IMReady', _onIMReady);
