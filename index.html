@@ -179,6 +179,9 @@
         let onGlowButton = () => {
             IMGlow($('#src'), parseFloat($('#glowAmount').val()), parseInt($('#glowSoftening').val()), $('#glowed'));
         }
+        let onSobelButton = () => {
+            IMSobel($('#src'), $('#sobeled'));
+        };
         let onWatercolorButton = () => {
             IMWatercolor(
                 $('#src'),
@@ -188,7 +191,17 @@
                 parseFloat($('#watercolorContrast').val()),
                 $('#watercolored')
             );
-        }
+        };
+        let onDisperseButton = () => {
+            IMDisperse(
+                $('#src'),
+                parseInt($('#disperseSpread').val()),
+                parseFloat($('#disperseDensity').val()),
+                parseInt($('#disperseCurviness').val()),
+                parseFloat($('#disperseReseed').val()),
+                $('#dispersed')
+            );
+        };
         let onIMReady = () => {
             let $filters = $('#filters');
             const sortedFilters = [...IMEnumFilters].sort();
@@ -271,7 +284,22 @@
             $('#watercolorContrast').on('input', () => {
                 $('#watercolorContrastDisplay').text($('#watercolorContrast').val());
             });
+            
+            $('#disperseSpread').on('input', () => {
+                $('#disperseSpreadDisplay').text($('#disperseSpread').val());
+            });
+            $('#disperseDensity').on('input', () => {
+                $('#disperseDensityDisplay').text($('#disperseDensity').val());
+            });
+            $('#disperseCurviness').on('input', () => {
+                $('#disperseCurvinessDisplay').text($('#disperseCurviness').val());
+            });
+            $('#disperseReseed').on('input', () => {
+                $('#disperseReseedDisplay').text($('#disperseReseed').val());
+            });
+            $('#disperseButton').on('click', onDisperseButton);
             $('#watercolorButton').on('click', onWatercolorButton);
+            $('#sobelButton').on('click', onSobelButton);
             $('#glowButton').on('click', onGlowButton);
             $('#exposureButton').on('click', onExposureButton);
             $morphologyKernel.on('change', onKernelChange);
@@ -389,18 +417,29 @@
         </p>
         <h2>Glow</h2>
         <p>According to Fred Weinhaus</p>
-        <label for="glowAmount">Amount</label> <input id="glowAmount" type="range" value="1.5" min="1" max="2" step="0.01" /> <span class="fixedWidth" id="glowAmountDisplay">1.5</span>,
+        <p><label for="glowAmount">Amount</label> <input id="glowAmount" type="range" value="1.5" min="1" max="2" step="0.01" /> <span class="fixedWidth" id="glowAmountDisplay">1.5</span>,
         <label for="glowSoftening">Softening</label> <input id="glowSoftening" type="range" value="0" min="0" max="150" step="1" /> <span class="fixedWidth" id="glowSofteningDisplay">0</span>,
-        <button id="glowButton" type="button">Apply</button>
+        <button id="glowButton" type="button">Apply</button></p>
         <p><img id="glowed" /></p>
+        <h2>Sobel</h2>
+        <button id="sobelButton" type="button">Apply</button>
+        <p><img id="sobeled" /></p>
         <h2>Watercolor</h2>
         <p>According to Fred Weinhaus</p>
-        <label for="watercolorSmoothing">Smoothing</label> <input id="watercolorSmoothing" type="range" value="0" min="0" max="20" step="1" /> <span class="fixedWidth" id="watercolorSmoothingDisplay">0</span>,
+        <p><label for="watercolorSmoothing">Smoothing</label> <input id="watercolorSmoothing" type="range" value="0" min="0" max="20" step="1" /> <span class="fixedWidth" id="watercolorSmoothingDisplay">0</span>,
         <label for="watercolorEdge">Edge</label> <input id="watercolorEdge" type="range" value="5" min="1" max="20" step="0.01" /> <span class="fixedWidth" id="watercolorEdgeDisplay">5</span>,
         <label for="watercolorMixing">Mixing</label> <input id="watercolorMixing" type="range" value="33" min="0" max="100" step="1" /> <span class="fixedWidth" id="watercolorMixingDisplay">33</span>,
         <label for="watercolorContrast">Contrast</label> <input id="watercolorContrast" type="range" value="0" min="0" max="30" step="0.01" /> <span class="fixedWidth" id="watercolorContrastDisplay">0</span>,
-        <button id="watercolorButton" type="button">Apply</button>
+        <button id="watercolorButton" type="button">Apply</button></p>
         <p><img id="watercolored" /></p>
+        <h2>Disperse</h2>
+        <p>According to Fred Weinhaus</p>
+        <p><label for="disperseSpread">Spread</label> <input id="disperseSpread" type="range" value="5" min="0" max="50" step="1" /> <span class="fixedWidth" id="disperseSpreadDisplay">5</span>,
+        <label for="disperseDensity">Density</label> <input id="disperseDensity" type="range" value="5" min="0" max="50" step="1" /> <span class="fixedWidth" id="disperseDensityDisplay">5</span>,
+        <label for="disperseCurviness">Curviness</label> <input id="disperseCurviness" type="range" value="5" min="0" max="50" step="1" /> <span class="fixedWidth" id="disperseCurvinessDisplay">5</span>,
+        <label for="disperseReseed">Reseed</label> <input id="disperseReseed" type="range" value="-1" min="-1" max="200" step="1" /> <span class="fixedWidth" id="disperseReseedDisplay">-1</span> (-1 = no reseed),
+        <button id="disperseButton" type="button">Apply</button></p>
+        <p><img id="dispersed" /></p>
     </main>
 </body>
 </html>

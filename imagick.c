@@ -1024,7 +1024,7 @@ void _IMGlow(const unsigned int width, const unsigned int height, const double a
 }
 
 void _IMSobel(const unsigned int width, const unsigned int height) {
-    Arguments *args = newArguments(120);
+    Arguments *args = newArguments(14);
     appendArgument(args, "convert");
     appendArgument(args, "-size");
     char _size[64];
@@ -1114,6 +1114,78 @@ void _IMWatercolor(const unsigned int width, const unsigned int height, const un
     appendArgument(args, "blend");
     appendArgument(args, "-composite");
     appendArgument(args, (char *)DST_FILE);
+    MagickWandGenesis();
+    ImageInfo *info = AcquireImageInfo();
+    ExceptionInfo *e = AcquireExceptionInfo();
+    MagickBooleanType cmdres = MagickCommandGenesis(info, ConvertImageCommand, args->argc, args->argv, NULL, e);
+    if (cmdres == MagickFalse) console_error("An error occured while executing command.", "");
+    if (e->severity != UndefinedException) {
+        console_error("Reason: ", e->reason);
+        console_error("Description: ", e->description);
+    }
+    info=DestroyImageInfo(info);
+    e=DestroyExceptionInfo(e);
+    MagickWandTerminus();
+    deleteArguments(args);
+}
+
+void _IMDisperse(const unsigned int width, const unsigned int height, const unsigned int spread, const unsigned int density, const unsigned int curviness, const int reseed) {
+    Arguments *args = newArguments(120);
+    appendArgument(args, "convert");
+    appendArgument(args, "-size");
+    char _size[64];
+    sprintf(_size, "%dx%d", width, height);
+    appendArgument(args, _size);
+    appendArgument(args, "xc:");
+    if (reseed > -1) {
+        appendArgument(args, "-seed");
+        char _seed[64];
+        sprintf(_seed, "%d", reseed);
+        appendArgument(args, _seed);
+    }
+    appendArgument(args, "+noise");
+    appendArgument(args, "Random");
+    appendArgument(args, "-virtual-pixel");
+    appendArgument(args, "tile");
+    if (curviness > 0) {
+        appendArgument(args, "-blur");
+        char _smooth[64];
+        sprintf(_smooth, "0x%d", curviness);
+        appendArgument(args, _smooth);
+    }
+    appendArgument(args, "-colorspace");
+    appendArgument(args, "gray");
+    appendArgument(args, "-contrast-stretch");
+    appendArgument(args, "0%");
+    appendArgument(args, "-channel");
+    appendArgument(args, "R");
+    appendArgument(args, "-evaluate");
+    appendArgument(args, "sine");
+    char _density[64];
+    sprintf(_density, "%d", density);
+    appendArgument(args, _density);
+    appendArgument(args, "-channel");
+    appendArgument(args, "G");
+    appendArgument(args, "-evaluate");
+    appendArgument(args, "cosine");
+    appendArgument(args, _density);
+    appendArgument(args, "-channel");
+    appendArgument(args, "RG");
+    appendArgument(args, "-separate");
+    appendArgument(args, "-size");
+    appendArgument(args, _size);
+    appendArgument(args, (char *)SRC_FILE);
+    appendArgument(args, "-insert");
+    appendArgument(args, "0");
+    appendArgument(args, "-define");
+    char _spread[64];
+    sprintf(_spread, "compose:args=%dx%d", spread, spread);
+    appendArgument(args, _spread);
+    appendArgument(args, "-compose");
+    appendArgument(args, "displace");
+    appendArgument(args, "-composite");
+    appendArgument(args, (char *)DST_FILE);
+
     MagickWandGenesis();
     ImageInfo *info = AcquireImageInfo();
     ExceptionInfo *e = AcquireExceptionInfo();
