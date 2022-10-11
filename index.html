@@ -202,6 +202,14 @@
                 $('#dispersed')
             );
         };
+        let onCrystallizeButton = () => {
+            IMCrystallize(
+                $('#src'),
+                parseInt($('#crystallizeNumber').val()),
+                parseInt($('#crystallizeSeed').val()),
+                $('#crystallized')
+            );
+        };
         let onIMReady = () => {
             let $filters = $('#filters');
             const sortedFilters = [...IMEnumFilters].sort();
@@ -297,6 +305,13 @@
             $('#disperseReseed').on('input', () => {
                 $('#disperseReseedDisplay').text($('#disperseReseed').val());
             });
+            $('#crystallizeNumber').on('input', () => {
+                $('#crystallizeNumberDisplay').text($('#crystallizeNumber').val());
+            });
+            $('#crystallizeSeed').on('input', () => {
+                $('#crystallizeSeedDisplay').text($('#crystallizeSeed').val());
+            });
+            $('#crystallizeButton').on('click', onCrystallizeButton);
             $('#disperseButton').on('click', onDisperseButton);
             $('#watercolorButton').on('click', onWatercolorButton);
             $('#sobelButton').on('click', onSobelButton);
@@ -440,6 +455,12 @@
         <label for="disperseReseed">Reseed</label> <input id="disperseReseed" type="range" value="-1" min="-1" max="200" step="1" /> <span class="fixedWidth" id="disperseReseedDisplay">-1</span> (-1 = no reseed),
         <button id="disperseButton" type="button">Apply</button></p>
         <p><img id="dispersed" /></p>
+        <h2>Crystallize</h2>
+        <p>According to Fred Weinhaus</p>
+        <p><label for="crystallizeNumber">Number</label> <input id="crystallizeNumber" type="range" value="500" min="1" max="2000" step="10" /> <span class="fixedWidth" id="crystallizeNumberDisplay">500</span>,
+        <label for="crystallizeSeed">Seed</label> <input id="crystallizeSeed" type="range" value="0" min="0" max="200" step="1" /> <span class="fixedWidth" id="crystallizeSeedDisplay">0</span>,
+        <button id="crystallizeButton" type="button">Apply</button></p>
+        <p><img id="crystallized" /></p>
     </main>
 </body>
 </html>

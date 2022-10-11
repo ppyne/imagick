@@ -74,7 +74,7 @@ typedef struct _Arguments {
 
 Arguments *newArguments(size_t size) {
 	Arguments *args = (Arguments *)malloc(sizeof(Arguments));
-	args->argv = (char **)malloc((size + 1) * sizeof(char **));
+	args->argv = (char **)malloc((size + 1) * sizeof(char *));
 	for (int i = 0; i < size + 1; i++) args->argv[i] = NULL;
 	args->argc = 0;
 	args->max_size = size;
@@ -91,7 +91,7 @@ void appendArgument(Arguments *args, const char *argument) {
 	if (args->argc + 1 > args->max_size) return;
 	int index = args->argc;
 	args->argc++;
-	args->argv[index] = (char *)malloc(ARG_MAX_SIZE * sizeof(char *));
+	args->argv[index] = (char *)malloc(ARG_MAX_SIZE * sizeof(char));
 	if (strlen(argument) < ARG_MAX_SIZE) strcpy(args->argv[index], argument);
 	else {
 		strncpy(args->argv[index], argument, ARG_MAX_SIZE - 1);
@@ -1199,6 +1199,108 @@ void _IMDisperse(const unsigned int width, const unsigned int height, const unsi
     e=DestroyExceptionInfo(e);
     MagickWandTerminus();
     deleteArguments(args);
+}
+
+size_t maxIntStrLen(const unsigned int i) {
+    char buffer[32];
+    buffer[0] = '\0';
+    sprintf(buffer, "%d", i);
+    return strlen(buffer);
+}
+
+void randomPoints(const unsigned perimeterX, const unsigned perimeterY, const unsigned int n, const unsigned int seed) {
+    remove("points.txt");
+    FILE *fh = fopen("points.txt", "w");
+    if (fh != NULL) {
+        size_t len = (maxIntStrLen(perimeterX) + maxIntStrLen(perimeterY) + 2); // string size of one point "x,y\0"
+        char *strbuffer = (char *)malloc(sizeof(char) * len);
+        srand(seed);
+        for (unsigned int i = 0; i < n; i++) {
+            sprintf(strbuffer, "%d,%d", rand() % perimeterX, rand() % perimeterY);
+            if (i > 0) fwrite((void *)" ", 1, 1, fh);
+            fwrite((void *)"point ", 6, 1, fh);
+            fwrite((void *)strbuffer, strlen(strbuffer), 1, fh);
+        }
+        fclose(fh);
+    } else {
+        console_error("Could not open points.txt for writing", "");
+    }
+}
+
+void exportColorsAndCoords(const unsigned int width, const unsigned int height, const unsigned int n, const unsigned int seed) {
+    randomPoints(width, height, n, seed);
+    Arguments *args = newArguments(24);
+    appendArgument(args, "convert");
+    appendArgument(args, "-size");
+    char _size[64];
+    sprintf(_size, "%dx%d", width, height);
+    appendArgument(args, _size);
+    appendArgument(args, (char *)SRC_FILE);
+    appendArgument(args, "-channel");
+    appendArgument(args, "rgb");
+    appendArgument(args, "(");
+    appendArgument(args, "-clone");
+    appendArgument(args, "0");
+    appendArgument(args, "-fill");
+    appendArgument(args, "black");
+    appendArgument(args, "-colorize");
+    appendArgument(args, "100");
+    appendArgument(args, "-fill");
+    appendArgument(args, "white");
+    appendArgument(args, "-draw");
+    appendArgument(args, "@points.txt");
+    appendArgument(args, ")");
+    appendArgument(args, "-alpha");
+    appendArgument(args, "off");
+    appendArgument(args, "-compose");
+    appendArgument(args, "copy_opacity");
+    appendArgument(args, "-composite");
+    appendArgument(args, "sparse-color:colors.txt");
+    remove("colors.txt");
+    MagickWandGenesis();
+    ImageInfo *info = AcquireImageInfo();
+    ExceptionInfo *e = AcquireExceptionInfo();
+    MagickBooleanType cmdres = MagickCommandGenesis(info, ConvertImageCommand, args->argc, args->argv, NULL, e);
+    if (cmdres == MagickFalse) console_error("An error occured while executing command.", "");
+    if (e->severity != UndefinedException) {
+        console_error("Reason: ", e->reason);
+        console_error("Description: ", e->description);
+    }
+    info=DestroyImageInfo(info);
+    e=DestroyExceptionInfo(e);
+    MagickWandTerminus();
+    deleteArguments(args);
+    remove("points.txt");
+}
+
+void _IMCrystallize(const unsigned int width, const unsigned int height, const unsigned int n, const unsigned int seed) {
+    exportColorsAndCoords(width, height, n, seed);
+    Arguments *args = newArguments(8);
+    appendArgument(args, "convert");
+    appendArgument(args, "-size");
+    char _size[64];
+    sprintf(_size, "%dx%d", width, height);
+    appendArgument(args, _size);
+
+    appendArgument(args, "xc:");
+    appendArgument(args, "-sparse-color");
+    appendArgument(args, "Voronoi");
+    appendArgument(args, "@colors.txt");
+    appendArgument(args, (char *)DST_FILE);
+    MagickWandGenesis();
+    ImageInfo *info = AcquireImageInfo();
+    ExceptionInfo *e = AcquireExceptionInfo();
+    MagickBooleanType cmdres = MagickCommandGenesis(info, ConvertImageCommand, args->argc, args->argv, NULL, e);
+    if (cmdres == MagickFalse) console_error("An error occured while executing command.", "");
+    if (e->severity != UndefinedException) {
+        console_error("Reason: ", e->reason);
+        console_error("Description: ", e->description);
+    }
+    info=DestroyImageInfo(info);
+    e=DestroyExceptionInfo(e);
+    MagickWandTerminus();
+    deleteArguments(args);
+    remove("colors.txt");
 }
 
 int main() {
