@@ -1303,6 +1303,75 @@ void _IMCrystallize(const unsigned int width, const unsigned int height, const u
     remove("colors.txt");
 }
 
+void _IMSoftLight(const unsigned int width, const unsigned int height, const unsigned int intensity, const unsigned int smooth, const unsigned int percent, const char *color) {
+    Arguments *args = newArguments(44);
+    appendArgument(args, "convert");
+    appendArgument(args, "-size");
+    char _size[64];
+    sprintf(_size, "%dx%d", width, height);
+    appendArgument(args, _size);
+    appendArgument(args, (char *)SRC_FILE);
+    appendArgument(args, "(");
+    appendArgument(args, "-clone");
+    appendArgument(args, "0");
+    appendArgument(args, "-fill");
+    appendArgument(args, color);
+    appendArgument(args, "-colorize");
+    appendArgument(args, "100%");
+    appendArgument(args, ")");
+    appendArgument(args, "(");
+    appendArgument(args, "-clone");
+    appendArgument(args, "0");
+    appendArgument(args, "-colorspace");
+    appendArgument(args, "HSB");
+    appendArgument(args, "-channel");
+    appendArgument(args, "G");
+    appendArgument(args, "-negate");
+    appendArgument(args, "-channel");
+    appendArgument(args, "GB");
+    appendArgument(args, "-separate");
+    appendArgument(args, "+channel");
+    appendArgument(args, "-compose");
+    appendArgument(args, "multiply");
+    appendArgument(args, "-composite");
+    appendArgument(args, "-contrast-stretch");
+    char _contrast[64];
+    sprintf(_contrast, "0,%d%%", percent);
+    appendArgument(args, _contrast);
+    appendArgument(args, "-fill");
+    appendArgument(args, "black");
+    appendArgument(args, "+opaque");
+    appendArgument(args, "white");
+    appendArgument(args, "-blur");
+    char _blur[64];
+    sprintf(_blur, "0x%d", smooth);
+    appendArgument(args, _blur);
+    appendArgument(args, "-auto-level");
+    appendArgument(args, "-evaluate");
+    appendArgument(args, "multiply");
+    char _intensity[64];
+    sprintf(_intensity, "%f", (double)intensity / 100.0);
+    appendArgument(args, _intensity);
+    appendArgument(args, ")");
+    appendArgument(args, "-compose");
+    appendArgument(args, "over");
+    appendArgument(args, "-composite");
+    appendArgument(args, (char *)DST_FILE);
+    MagickWandGenesis();
+    ImageInfo *info = AcquireImageInfo();
+    ExceptionInfo *e = AcquireExceptionInfo();
+    MagickBooleanType cmdres = MagickCommandGenesis(info, ConvertImageCommand, args->argc, args->argv, NULL, e);
+    if (cmdres == MagickFalse) console_error("An error occured while executing command.", "");
+    if (e->severity != UndefinedException) {
+        console_error("Reason: ", e->reason);
+        console_error("Description: ", e->description);
+    }
+    info=DestroyImageInfo(info);
+    e=DestroyExceptionInfo(e);
+    MagickWandTerminus();
+    deleteArguments(args);
+}
+
 int main() {
     is_ready();
     return 0;

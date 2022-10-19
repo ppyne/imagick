@@ -210,6 +210,16 @@
                 $('#crystallized')
             );
         };
+        let onSoftLightButton = () => {
+            IMSoftLight(
+                $('#src'),
+                parseInt($('#softLightIntensity').val()),
+                parseInt($('#softLightSmooth').val()),
+                parseInt($('#softLightPercent').val()),
+                $('#softLightColor').val(),
+                $('#softLighted')
+            );
+        };
         let onIMReady = () => {
             let $filters = $('#filters');
             const sortedFilters = [...IMEnumFilters].sort();
@@ -311,6 +321,16 @@
             $('#crystallizeSeed').on('input', () => {
                 $('#crystallizeSeedDisplay').text($('#crystallizeSeed').val());
             });
+            $('#softLightIntensity').on('input', () => {
+                $('#softLightIntensityDisplay').text($('#softLightIntensity').val());
+            });
+            $('#softLightSmooth').on('input', () => {
+                $('#softLightSmoothDisplay').text($('#softLightSmooth').val());
+            });
+            $('#softLightPercent').on('input', () => {
+                $('#softLightPercentDisplay').text($('#softLightPercent').val());
+            });
+            $('#softLightButton').on('click', onSoftLightButton);
             $('#crystallizeButton').on('click', onCrystallizeButton);
             $('#disperseButton').on('click', onDisperseButton);
             $('#watercolorButton').on('click', onWatercolorButton);
@@ -461,6 +481,14 @@
         <label for="crystallizeSeed">Seed</label> <input id="crystallizeSeed" type="range" value="0" min="0" max="200" step="1" /> <span class="fixedWidth" id="crystallizeSeedDisplay">0</span>,
         <button id="crystallizeButton" type="button">Apply</button></p>
         <p><img id="crystallized" /></p>
+        <h2>Soft light</h2>
+        <p>According to Fred Weinhaus</p>
+        <p><label for="softLightIntensity">Intensity</label> <input id="softLightIntensity" type="range" value="80" min="0" max="200" step="1" /> <span class="fixedWidth" id="softLightIntensityDisplay">80</span>,
+        <label for="softLightSmooth">Smooth</label> <input id="softLightSmooth" type="range" value="50" min="0" max="500" step="1" /> <span class="fixedWidth" id="softLightSmoothDisplay">50</span>,
+        <label for="softLightPercent">Percent</label> <input id="softLightPercent" type="range" value="5" min="0" max="100" step="1" /> <span class="fixedWidth" id="softLightPercentDisplay">5</span>,
+        <label for="softLightColor">Color</label> <input id="softLightColor" type="color" value="#ffffff" />,
+        <button id="softLightButton" type="button">Apply</button></p>
+        <p><img id="softLighted" /></p>
     </main>
 </body>
 </html>
