@@ -1372,6 +1372,90 @@ void _IMSoftLight(const unsigned int width, const unsigned int height, const uns
     deleteArguments(args);
 }
 
+void _IMDaveHillEffect(const unsigned int width, const unsigned int height, const double brightness, const double contrast, const unsigned int gain) {
+    Arguments *args = newArguments(51);
+    appendArgument(args, "convert");
+    appendArgument(args, "-size");
+    char _size[64];
+    sprintf(_size, "%dx%d", width, height);
+    appendArgument(args, _size);
+    appendArgument(args, (char *)SRC_FILE);
+    appendArgument(args, "-channel");
+    appendArgument(args, "rgb");
+
+    if (brightness != 1.0) {
+        appendArgument(args, "-evaluate");
+        appendArgument(args, "multiply");
+        char _brightness[64];
+        sprintf(_brightness, "%f", brightness);
+        appendArgument(args, _brightness);
+    }
+
+    if (contrast != 0.0) {
+        if (contrast >= 0.0) appendArgument(args, "-sigmoidal-contrast");
+        else appendArgument(args, "+sigmoidal-contrast");
+        char _contrast[64];
+        sprintf(_contrast, "%fx50%%", fabs(contrast));
+        appendArgument(args, _contrast);
+    }
+
+    appendArgument(args, "(");
+    appendArgument(args, "-clone");
+    appendArgument(args, "0");
+    appendArgument(args, "-bias");
+    appendArgument(args, "50%");
+    appendArgument(args, "-define");
+    appendArgument(args, "convolve:scale=1");
+    appendArgument(args, "-morphology");
+    appendArgument(args, "Convolve");
+    appendArgument(args, "DoG:0,0,4");
+    appendArgument(args, "-clamp");
+    appendArgument(args, ")");
+    appendArgument(args, "-compose");
+    appendArgument(args, "vividlight");
+    appendArgument(args, "-composite");
+    appendArgument(args, "-clamp");
+    appendArgument(args, "(");
+    appendArgument(args, "-clone");
+    appendArgument(args, "0");
+    appendArgument(args, "-bias");
+    appendArgument(args, "50%");
+    appendArgument(args, "-define");
+    appendArgument(args, "convolve:scale=1");
+    appendArgument(args, "-morphology");
+    appendArgument(args, "Convolve");
+    appendArgument(args, "DoG:0,0,6.9");
+    appendArgument(args, "-clamp");
+    appendArgument(args, ")");
+    appendArgument(args, "(");
+    appendArgument(args, "-clone");
+    appendArgument(args, "0");
+    appendArgument(args, "-fill");
+    char _gain[64];
+    sprintf(_gain, "gray%d", gain);
+    appendArgument(args, _gain);
+    appendArgument(args, "-colorize");
+    appendArgument(args, "100");
+    appendArgument(args, ")");
+    appendArgument(args, "-compose");
+    appendArgument(args, "colorize");
+    appendArgument(args, "-composite");
+    appendArgument(args, (char *)DST_FILE);
+    MagickWandGenesis();
+    ImageInfo *info = AcquireImageInfo();
+    ExceptionInfo *e = AcquireExceptionInfo();
+    MagickBooleanType cmdres = MagickCommandGenesis(info, ConvertImageCommand, args->argc, args->argv, NULL, e);
+    if (cmdres == MagickFalse) console_error("An error occured while executing command.", "");
+    if (e->severity != UndefinedException) {
+        console_error("Reason: ", e->reason);
+        console_error("Description: ", e->description);
+    }
+    info=DestroyImageInfo(info);
+    e=DestroyExceptionInfo(e);
+    MagickWandTerminus();
+    deleteArguments(args);
+}
+
 int main() {
     is_ready();
     return 0;

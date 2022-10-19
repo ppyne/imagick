@@ -220,6 +220,15 @@
                 $('#softLighted')
             );
         };
+        let onDaveHillEffectButton = () => {
+            IMDaveHillEffect(
+                $('#src'),
+                parseFloat($('#daveHillEffectBrightness').val()),
+                parseFloat($('#daveHillEffectContrast').val()),
+                parseInt($('#daveHillEffectGain').val()),
+                $('#daveHillEffected')
+            );
+        };
         let onIMReady = () => {
             let $filters = $('#filters');
             const sortedFilters = [...IMEnumFilters].sort();
@@ -330,6 +339,16 @@
             $('#softLightPercent').on('input', () => {
                 $('#softLightPercentDisplay').text($('#softLightPercent').val());
             });
+            $('#daveHillEffectBrightness').on('input', () => {
+                $('#daveHillEffectBrightnessDisplay').text($('#daveHillEffectBrightness').val());
+            });
+            $('#daveHillEffectContrast').on('input', () => {
+                $('#daveHillEffectContrastDisplay').text($('#daveHillEffectContrast').val());
+            });
+            $('#daveHillEffectGain').on('input', () => {
+                $('#daveHillEffectGainDisplay').text($('#daveHillEffectGain').val());
+            });
+            $('#daveHillEffectButton').on('click', onDaveHillEffectButton);
             $('#softLightButton').on('click', onSoftLightButton);
             $('#crystallizeButton').on('click', onCrystallizeButton);
             $('#disperseButton').on('click', onDisperseButton);
@@ -489,6 +508,13 @@
         <label for="softLightColor">Color</label> <input id="softLightColor" type="color" value="#ffffff" />,
         <button id="softLightButton" type="button">Apply</button></p>
         <p><img id="softLighted" /></p>
+        <h2>Dave Hill Effect</h2>
+        <p>According to Fred Weinhaus</p>
+        <p><label for="daveHillEffectBrightness">Brightness</label> <input id="daveHillEffectBrightness" type="range" value="1" min="0" max="2" step="0.01" /> <span class="fixedWidth" id="daveHillEffectBrightnessDisplay">1</span>,
+        <label for="daveHillEffectContrast">Contrast</label> <input id="daveHillEffectContrast" type="range" value="0" min="-10" max="10" step="0.01" /> <span class="fixedWidth" id="daveHillEffectContrastDisplay">0</span>,
+        <label for="daveHillEffectGain">Gain</label> <input id="daveHillEffectGain" type="range" value="40" min="0" max="100" step="1" /> <span class="fixedWidth" id="daveHillEffectGainDisplay">40</span>,
+        <button id="daveHillEffectButton" type="button">Apply</button></p>
+        <p><img id="daveHillEffected" /></p>
     </main>
 </body>
 </html>

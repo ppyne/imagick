@@ -5516,6 +5516,9 @@ var __IMCrystallize = Module["__IMCrystallize"] = createExportWrapper("_IMCrysta
 var __IMSoftLight = Module["__IMSoftLight"] = createExportWrapper("_IMSoftLight");
 
 /** @type {function(...*):?} */
+var __IMDaveHillEffect = Module["__IMDaveHillEffect"] = createExportWrapper("_IMDaveHillEffect");
+
+/** @type {function(...*):?} */
 var _main = Module["_main"] = createExportWrapper("main");
 
 /** @type {function(...*):?} */
@@ -5556,8 +5559,8 @@ var dynCall_iijji = Module["dynCall_iijji"] = createExportWrapper("dynCall_iijji
 /** @type {function(...*):?} */
 var dynCall_jiji = Module["dynCall_jiji"] = createExportWrapper("dynCall_jiji");
 
-var ___start_em_js = Module['___start_em_js'] = 575152;
-var ___stop_em_js = Module['___stop_em_js'] = 576320;
+var ___start_em_js = Module['___start_em_js'] = 575216;
+var ___stop_em_js = Module['___stop_em_js'] = 576384;
 
 
 
