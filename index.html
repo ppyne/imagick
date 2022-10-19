@@ -196,9 +196,9 @@
             IMDisperse(
                 $('#src'),
                 parseInt($('#disperseSpread').val()),
-                parseFloat($('#disperseDensity').val()),
+                parseInt($('#disperseDensity').val()),
                 parseInt($('#disperseCurviness').val()),
-                parseFloat($('#disperseReseed').val()),
+                parseInt($('#disperseReseed').val()),
                 $('#dispersed')
             );
         };
@@ -232,10 +232,18 @@
         let onFrostedButton = () => {
             IMFrosted(
                 $('#src'),
-                parseFloat($('#frostedSpread').val()),
-                parseFloat($('#frostedBlur').val()),
+                parseInt($('#frostedSpread').val()),
+                parseInt($('#frostedBlur').val()),
                 parseInt($('#frostedSeed').val()),
                 $('#frosted')
+            );
+        };
+        let onLucisArtEffectButton = () => {
+            IMLucisArtEffect(
+                $('#src'),
+                parseFloat($('#lucisArtEffectGain').val()),
+                parseInt($('#lucisArtEffectSaturation').val()),
+                $('#lucisArtEffected')
             );
         };
         let onIMReady = () => {
@@ -366,6 +374,13 @@
             $('#frostedSeed').on('input', () => {
                 $('#frostedSeedDisplay').text($('#frostedSeed').val());
             });
+            $('#lucisArtEffectGain').on('input', () => {
+                $('#lucisArtEffectGainDisplay').text($('#lucisArtEffectGain').val());
+            });
+            $('#lucisArtEffectSaturation').on('input', () => {
+                $('#lucisArtEffectSaturationDisplay').text($('#lucisArtEffectSaturation').val());
+            });
+            $('#lucisArtEffectButton').on('click', onLucisArtEffectButton);
             $('#frostedButton').on('click', onFrostedButton);
             $('#daveHillEffectButton').on('click', onDaveHillEffectButton);
             $('#softLightButton').on('click', onSoftLightButton);
@@ -414,6 +429,7 @@
             <option value="overexposed.png">overexposed.png</option>
             <option value="underexposed.png">underexposed.png</option>
             <option value="tulips.jpg">tulips.jpg</option>
+            <option value="woman_with_earing.jpg">woman_with_earing.jpg</option>
         </select></p>
         <p><img id="src" src="peppers.png" /></p>
         <h2>Resize</h2>
@@ -527,7 +543,7 @@
         <label for="softLightColor">Color</label> <input id="softLightColor" type="color" value="#ffffff" />,
         <button id="softLightButton" type="button">Apply</button></p>
         <p><img id="softLighted" /></p>
-        <h2>Dave Hill Effect</h2>
+        <h2>Dave Hill effect</h2>
         <p>According to Fred Weinhaus</p>
         <p><label for="daveHillEffectBrightness">Brightness</label> <input id="daveHillEffectBrightness" type="range" value="1" min="0" max="2" step="0.01" /> <span class="fixedWidth" id="daveHillEffectBrightnessDisplay">1</span>,
         <label for="daveHillEffectContrast">Contrast</label> <input id="daveHillEffectContrast" type="range" value="0" min="-10" max="10" step="0.01" /> <span class="fixedWidth" id="daveHillEffectContrastDisplay">0</span>,
@@ -541,6 +557,12 @@
         <label for="frostedSeed">Seed</label> <input id="frostedSeed" type="range" value="0" min="0" max="200" step="1" /> <span class="fixedWidth" id="frostedSeedDisplay">0</span>,
         <button id="frostedButton" type="button">Apply</button></p>
         <p><img id="frosted" /></p>
+        <h2>Lucis art effect</h2>
+        <p>According to Fred Weinhaus</p>
+        <p><label for="lucisArtEffectGain">Gain</label> <input id="lucisArtEffectGain" type="range" value="0.3" min="0" max="2" step="0.01" /> <span class="fixedWidth" id="lucisArtEffectGainDisplay">0.3</span>,
+        <label for="lucisArtEffectSaturation">Saturation</label> <input id="lucisArtEffectSaturation" type="range" value="60" min="0" max="200" step="1" /> <span class="fixedWidth" id="lucisArtEffectSaturationDisplay">60</span>,
+        <button id="lucisArtEffectButton" type="button">Apply</button></p>
+        <p><img id="lucisArtEffected" /></p>
     </main>
 </body>
 </html>

@@ -1529,6 +1529,69 @@ void _IMFrosted(const unsigned int width, const unsigned int height, const unsig
     deleteArguments(args);
 }
 
+void _IMLucisArtEffect(const unsigned int width, const unsigned int height, const double gain, const unsigned int saturation) {
+
+    Arguments *args = newArguments(39);
+    appendArgument(args, "convert");
+    appendArgument(args, "-size");
+    char _size[64];
+    sprintf(_size, "%dx%d", width, height);
+    appendArgument(args, _size);
+    appendArgument(args, (char *)SRC_FILE);
+    appendArgument(args, "-channel");
+    appendArgument(args, "rgb");
+    appendArgument(args, "(");
+    appendArgument(args, "-clone");
+    appendArgument(args, "0");
+    appendArgument(args, "-define");
+    appendArgument(args, "convolve:scale=1");
+    appendArgument(args, "-morphology");
+    appendArgument(args, "Convolve");
+    appendArgument(args, "DoG:0,0,2");
+    appendArgument(args, ")");
+    appendArgument(args, "-compose");
+    appendArgument(args, "screen");
+    appendArgument(args, "-composite");
+    appendArgument(args, "-clamp");
+    appendArgument(args, "(");
+    appendArgument(args, "-clone");
+    appendArgument(args, "0");
+    appendArgument(args, "-modulate");
+    appendArgument(args, "100,0,100");
+    appendArgument(args, "-negate");
+    appendArgument(args, "-morphology");
+    appendArgument(args, "convolve");
+    appendArgument(args, "blur:0x6;blur:0x6+90");
+    appendArgument(args, ")");
+	appendArgument(args, "-compose");
+    appendArgument(args, "overlay");
+    appendArgument(args, "-composite");
+	appendArgument(args, "-unsharp");
+    char _gain[64];
+    sprintf(_gain, "0x9+%f+0", gain);
+    appendArgument(args, _gain);
+	appendArgument(args, "-define");
+    appendArgument(args, "modulate:colorspace=HCL");
+    appendArgument(args, "-modulate");
+    char _saturation[64];
+    sprintf(_saturation, "100,%d,100", saturation);
+    appendArgument(args, _saturation);
+    appendArgument(args, (char *)DST_FILE);
+    MagickWandGenesis();
+    ImageInfo *info = AcquireImageInfo();
+    ExceptionInfo *e = AcquireExceptionInfo();
+    MagickBooleanType cmdres = MagickCommandGenesis(info, ConvertImageCommand, args->argc, args->argv, NULL, e);
+    if (cmdres == MagickFalse) console_error("An error occured while executing command.", "");
+    if (e->severity != UndefinedException) {
+        console_error("Reason: ", e->reason);
+        console_error("Description: ", e->description);
+    }
+    info=DestroyImageInfo(info);
+    e=DestroyExceptionInfo(e);
+    MagickWandTerminus();
+    deleteArguments(args);
+}
+
 int main() {
     is_ready();
     return 0;
