@@ -5519,6 +5519,9 @@ var __IMSoftLight = Module["__IMSoftLight"] = createExportWrapper("_IMSoftLight"
 var __IMDaveHillEffect = Module["__IMDaveHillEffect"] = createExportWrapper("_IMDaveHillEffect");
 
 /** @type {function(...*):?} */
+var __IMFrosted = Module["__IMFrosted"] = createExportWrapper("_IMFrosted");
+
+/** @type {function(...*):?} */
 var _main = Module["_main"] = createExportWrapper("main");
 
 /** @type {function(...*):?} */

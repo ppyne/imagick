@@ -299,6 +299,14 @@ let IMDaveHillEffect = ($src, brightness, contrast, gain, $dst) => {
     _IMClearFS();
 };
 
+let IMFrosted = ($src, spread, blur, seed, $dst) => {
+    const [ width, height ] = _IMSetSource($src);
+    if (width === false) return;
+    _IMFrosted(width, height, spread, blur, seed);
+    _IMSetDestination($dst, width, height);
+    _IMClearFS();
+};
+
 let _onIMReady = () => {
     _IMResize = Module.cwrap('_IMResize', null, ['number', 'number', 'number', 'number', 'number', 'number']);
     _IMCmdResize = Module.cwrap('_IMCmdResize', null, ['number', 'number', 'number', 'number', 'string']);
@@ -322,6 +330,7 @@ let _onIMReady = () => {
     _IMCrystallize = Module.cwrap('_IMCrystallize', null, ['number', 'number', 'number', 'number']);
     _IMSoftLight = Module.cwrap('_IMSoftLight', null, ['number', 'number', 'number', 'number', 'number', 'string']);
     _IMDaveHillEffect = Module.cwrap('_IMDaveHillEffect', null, ['number', 'number', 'number', 'number', 'number']);
+    _IMFrosted = Module.cwrap('_IMFrosted', null, ['number', 'number', 'number', 'number', 'number']);
 };
 
 $(window).on('IMReady', _onIMReady);

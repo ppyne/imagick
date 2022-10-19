@@ -229,6 +229,15 @@
                 $('#daveHillEffected')
             );
         };
+        let onFrostedButton = () => {
+            IMFrosted(
+                $('#src'),
+                parseFloat($('#frostedSpread').val()),
+                parseFloat($('#frostedBlur').val()),
+                parseInt($('#frostedSeed').val()),
+                $('#frosted')
+            );
+        };
         let onIMReady = () => {
             let $filters = $('#filters');
             const sortedFilters = [...IMEnumFilters].sort();
@@ -348,6 +357,16 @@
             $('#daveHillEffectGain').on('input', () => {
                 $('#daveHillEffectGainDisplay').text($('#daveHillEffectGain').val());
             });
+            $('#frostedSpread').on('input', () => {
+                $('#frostedSpreadDisplay').text($('#frostedSpread').val());
+            });
+            $('#frostedBlur').on('input', () => {
+                $('#frostedBlurDisplay').text($('#frostedBlur').val());
+            });
+            $('#frostedSeed').on('input', () => {
+                $('#frostedSeedDisplay').text($('#frostedSeed').val());
+            });
+            $('#frostedButton').on('click', onFrostedButton);
             $('#daveHillEffectButton').on('click', onDaveHillEffectButton);
             $('#softLightButton').on('click', onSoftLightButton);
             $('#crystallizeButton').on('click', onCrystallizeButton);
@@ -515,6 +534,13 @@
         <label for="daveHillEffectGain">Gain</label> <input id="daveHillEffectGain" type="range" value="40" min="0" max="100" step="1" /> <span class="fixedWidth" id="daveHillEffectGainDisplay">40</span>,
         <button id="daveHillEffectButton" type="button">Apply</button></p>
         <p><img id="daveHillEffected" /></p>
+        <h2>Frosted</h2>
+        <p>According to Fred Weinhaus</p>
+        <p><label for="frostedSpread">Spread</label> <input id="frostedSpread" type="range" value="5" min="0" max="50" step="1" /> <span class="fixedWidth" id="frostedSpreadDisplay">5</span>,
+        <label for="frostedBlur">Blur</label> <input id="frostedBlur" type="range" value="5" min="0" max="50" step="1" /> <span class="fixedWidth" id="frostedBlurDisplay">5</span>,
+        <label for="frostedSeed">Seed</label> <input id="frostedSeed" type="range" value="0" min="0" max="200" step="1" /> <span class="fixedWidth" id="frostedSeedDisplay">0</span>,
+        <button id="frostedButton" type="button">Apply</button></p>
+        <p><img id="frosted" /></p>
     </main>
 </body>
 </html>
