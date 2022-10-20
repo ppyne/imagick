@@ -203,6 +203,14 @@ let IMAutoGamma = ($src, $dst, channels = IMEnumChannels.RGB) => {
     _IMClearFS();
 };
 
+let IMCmdAutoGamma = ($src, $dst) => {
+    const [ width, height ] = _IMSetSource($src);
+    if (width === false) return;
+    _IMCmdAutoGamma(width, height);
+    _IMSetDestination($dst, width, height);
+    _IMClearFS();
+};
+
 let IMContrast = ($src, $dst, increase = true) => {
     const [ width, height ] = _IMSetSource($src);
     if (width === false) return;
@@ -340,6 +348,7 @@ let _onIMReady = () => {
     _IMDaveHillEffect = Module.cwrap('_IMDaveHillEffect', null, ['number', 'number', 'number', 'number', 'number']);
     _IMFrosted = Module.cwrap('_IMFrosted', null, ['number', 'number', 'number', 'number', 'number']);
     _IMLucisArtEffect = Module.cwrap('_IMLucisArtEffect', null, ['number', 'number', 'number', 'number']);
+    _IMCmdAutoGamma = Module.cwrap('_IMCmdAutoGamma', null, ['number', 'number']);
 };
 
 $(window).on('IMReady', _onIMReady);

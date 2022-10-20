@@ -110,6 +110,29 @@ void printArguments(const Arguments *args) {
     printf("\n");
 }
 
+char *loadArgument(const char *filename) {
+    char *buffer = NULL;
+    FILE *fh = fopen(filename, "r");
+    if (fh != NULL) {
+        long bufsize = 0;
+        if (fseek(fh, 0L, SEEK_END) == 0) {
+            bufsize = ftell(fh);
+            if (bufsize == -1) fprintf(stderr, "Error while trying to get the size of %s", filename);
+            else {
+                buffer = malloc(sizeof(char) * (bufsize + 1));
+                if (fseek(fh, 0L, SEEK_SET) != 0) fprintf(stderr, "Error while moving to the begining of %s", filename);
+                else {
+                    size_t newLen = fread(buffer, sizeof(char), bufsize, fh);
+                    if ( ferror( fh ) != 0 ) fprintf(stderr, "Error while reading %s", filename);
+                    else buffer[newLen++] = '\0';
+                }
+            }
+        }
+        fclose(fh);
+    } else fprintf(stderr, "Error while opening %s for reading", filename);
+    return buffer;
+}
+
 void _IMResize(const unsigned int srcWidth, const unsigned int srcHeight, const unsigned int dstWidth, const unsigned int dstHeight, const int filter, const double blur) {
     MagickBooleanType status;
     MagickWand *magick_wand;
@@ -1130,7 +1153,7 @@ void _IMWatercolor(const unsigned int width, const unsigned int height, const un
 }
 
 void _IMDisperse(const unsigned int width, const unsigned int height, const unsigned int spread, const unsigned int density, const unsigned int curviness, const int reseed) {
-    Arguments *args = newArguments(120);
+    Arguments *args = newArguments(40);
     appendArgument(args, "convert");
     appendArgument(args, "-size");
     char _size[64];
@@ -1590,6 +1613,67 @@ void _IMLucisArtEffect(const unsigned int width, const unsigned int height, cons
     e=DestroyExceptionInfo(e);
     MagickWandTerminus();
     deleteArguments(args);
+}
+
+void calcLuminanceGamma(const unsigned int width, const unsigned int height) {
+    remove("gamma.txt");
+    Arguments *args = newArguments(9);
+    appendArgument(args, "convert");
+    appendArgument(args, "-size");
+    char _size[64];
+    sprintf(_size, "%dx%d", width, height);
+    appendArgument(args, _size);
+    appendArgument(args, (char *)SRC_FILE);
+    appendArgument(args, "-colorspace");
+    appendArgument(args, "Rec709Luma");
+    appendArgument(args, "-format");
+    appendArgument(args, "%[fx:log(mean)/log(0.5)]");
+    appendArgument(args, "info:gamma.txt");
+    MagickWandGenesis();
+    ImageInfo *info = AcquireImageInfo();
+    ExceptionInfo *e = AcquireExceptionInfo();
+    MagickBooleanType cmdres = MagickCommandGenesis(info, ConvertImageCommand, args->argc, args->argv, NULL, e);
+    if (cmdres == MagickFalse) console_error("An error occured while executing command.", "");
+    if (e->severity != UndefinedException) {
+        console_error("Reason: ", e->reason);
+        console_error("Description: ", e->description);
+    }
+    info=DestroyImageInfo(info);
+    e=DestroyExceptionInfo(e);
+    MagickWandTerminus();
+    deleteArguments(args);
+}
+
+void _IMCmdAutoGamma(const unsigned int width, const unsigned int height) {
+    calcLuminanceGamma(width, height);
+    Arguments *args = newArguments(7);
+    appendArgument(args, "convert");
+    appendArgument(args, "-size");
+    char _size[64];
+    sprintf(_size, "%dx%d", width, height);
+    appendArgument(args, _size);
+    appendArgument(args, (char *)SRC_FILE);
+    appendArgument(args, "-gamma");
+    char *_gamma = loadArgument("gamma.txt");
+    if (_gamma != NULL) {
+        appendArgument(args, _gamma);
+        free(_gamma);
+    } else appendArgument(args, "1.0");
+    appendArgument(args, (char *)DST_FILE);
+    MagickWandGenesis();
+    ImageInfo *info = AcquireImageInfo();
+    ExceptionInfo *e = AcquireExceptionInfo();
+    MagickBooleanType cmdres = MagickCommandGenesis(info, ConvertImageCommand, args->argc, args->argv, NULL, e);
+    if (cmdres == MagickFalse) console_error("An error occured while executing command.", "");
+    if (e->severity != UndefinedException) {
+        console_error("Reason: ", e->reason);
+        console_error("Description: ", e->description);
+    }
+    info=DestroyImageInfo(info);
+    e=DestroyExceptionInfo(e);
+    MagickWandTerminus();
+    deleteArguments(args);
+    remove("gamma.txt");
 }
 
 int main() {
