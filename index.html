@@ -246,6 +246,22 @@
                 $('#lucisArtEffected')
             );
         };
+        let onShadowHighlightButton = () => {
+            IMShadowHighlight(
+                $('#src'),
+                parseInt($('#shadowHighlightShadowAmount').val()),
+                parseInt($('#shadowHighlightShadowWidth').val()),
+                parseFloat($('#shadowHighlightShadowRadius').val()),
+                parseInt($('#shadowHighlightHighLightAmount').val()),
+                parseInt($('#shadowHighlightHighLightWidth').val()),
+                parseFloat($('#shadowHighlightHighLightRadius').val()),
+                parseInt($('#shadowHighlightMidtoneAmount').val()),
+                parseInt($('#shadowHighlightColorCorrectionAmount').val()),
+                parseFloat($('#shadowHighlightBlackClip').val()),
+                parseFloat($('#shadowHighlightWhiteClip').val()),
+                $('#shadowHighlighted')
+            );
+        };
         let onIMReady = () => {
             let $filters = $('#filters');
             const sortedFilters = [...IMEnumFilters].sort();
@@ -380,6 +396,37 @@
             $('#lucisArtEffectSaturation').on('input', () => {
                 $('#lucisArtEffectSaturationDisplay').text($('#lucisArtEffectSaturation').val());
             });
+            $('#shadowHighlightShadowAmount').on('input', () => {
+                $('#shadowHighlightShadowAmountDisplay').text($('#shadowHighlightShadowAmount').val());
+            });
+            $('#shadowHighlightShadowWidth').on('input', () => {
+                $('#shadowHighlightShadowWidthDisplay').text($('#shadowHighlightShadowWidth').val());
+            });
+            $('#shadowHighlightShadowRadius').on('input', () => {
+                $('#shadowHighlightShadowRadiusDisplay').text($('#shadowHighlightShadowRadius').val());
+            });
+            $('#shadowHighlightHighLightAmount').on('input', () => {
+                $('#shadowHighlightHighLightAmountDisplay').text($('#shadowHighlightHighLightAmount').val());
+            });
+            $('#shadowHighlightHighLightWidth').on('input', () => {
+                $('#shadowHighlightHighLightWidthDisplay').text($('#shadowHighlightHighLightWidth').val());
+            });
+            $('#shadowHighlightHighLightRadius').on('input', () => {
+                $('#shadowHighlightHighLightRadiusDisplay').text($('#shadowHighlightHighLightRadius').val());
+            });
+            $('#shadowHighlightMidtoneAmount').on('input', () => {
+                $('#shadowHighlightMidtoneAmountDisplay').text($('#shadowHighlightMidtoneAmount').val());
+            });
+            $('#shadowHighlightColorCorrectionAmount').on('input', () => {
+                $('#shadowHighlightColorCorrectionAmountDisplay').text($('#shadowHighlightColorCorrectionAmount').val());
+            });
+            $('#shadowHighlightBlackClip').on('input', () => {
+                $('#shadowHighlightBlackClipDisplay').text($('#shadowHighlightBlackClip').val());
+            });
+            $('#shadowHighlightWhiteClip').on('input', () => {
+                $('#shadowHighlightWhiteClipDisplay').text($('#shadowHighlightWhiteClip').val());
+            });
+            $('#shadowHighlightButton').on('click', onShadowHighlightButton);
             $('#lucisArtEffectButton').on('click', onLucisArtEffectButton);
             $('#frostedButton').on('click', onFrostedButton);
             $('#daveHillEffectButton').on('click', onDaveHillEffectButton);
@@ -430,6 +477,7 @@
             <option value="underexposed.png">underexposed.png</option>
             <option value="tulips.jpg">tulips.jpg</option>
             <option value="woman_with_earing.jpg">woman_with_earing.jpg</option>
+            <option value="duck_in_pond.jpg">duck_in_pond.jpg</option>
         </select></p>
         <p><img id="src" src="peppers.png" /></p>
         <h2>Resize</h2>
@@ -563,6 +611,25 @@
         <label for="lucisArtEffectSaturation">Saturation</label> <input id="lucisArtEffectSaturation" type="range" value="60" min="0" max="200" step="1" /> <span class="fixedWidth" id="lucisArtEffectSaturationDisplay">60</span>,
         <button id="lucisArtEffectButton" type="button">Apply</button></p>
         <p><img id="lucisArtEffected" /></p>
+        <h2>Shadow and high light</h2>
+        <p>According to Fred Weinhaus</p>
+        <p>
+            <label for="shadowHighlightShadowAmount" style="display: inline-block;width: 180px;">Shadow amount</label> <input id="shadowHighlightShadowAmount" type="range" value="50" min="0" max="100" step="1" /> <span class="fixedWidth" id="shadowHighlightShadowAmountDisplay">50</span>,<br />
+            <label for="shadowHighlightShadowWidth" style="display: inline-block;width: 180px;">Shadow width</label> <input id="shadowHighlightShadowWidth" type="range" value="50" min="0" max="100" step="1" /> <span class="fixedWidth" id="shadowHighlightShadowWidthDisplay">50</span>,<br />
+            <label for="shadowHighlightShadowRadius" style="display: inline-block;width: 180px;">Shadow radius</label> <input id="shadowHighlightShadowRadius" type="range" value="30" min="0" max="100" step="0.01" /> <span class="fixedWidth" id="shadowHighlightShadowRadiusDisplay">30</span>,<br />
+            
+            <label for="shadowHighlightHighLightAmount" style="display: inline-block;width: 180px;">High light amount</label> <input id="shadowHighlightHighLightAmount" type="range" value="0" min="0" max="100" step="1" /> <span class="fixedWidth" id="shadowHighlightHighLightAmountDisplay">0</span>,<br />
+            <label for="shadowHighlightHighLightWidth" style="display: inline-block;width: 180px;">High light width</label> <input id="shadowHighlightHighLightWidth" type="range" value="50" min="0" max="100" step="1" /> <span class="fixedWidth" id="shadowHighlightHighLightWidthDisplay">50</span>,<br />
+            <label for="shadowHighlightHighLightRadius" style="display: inline-block;width: 180px;">High light radius</label> <input id="shadowHighlightHighLightRadius" type="range" value="30" min="0" max="100" step="0.01" /> <span class="fixedWidth" id="shadowHighlightHighLightRadiusDisplay">30</span>,<br />
+
+            <label for="shadowHighlightMidtoneAmount" style="display: inline-block;width: 180px;">Midtone amount</label> <input id="shadowHighlightMidtoneAmount" type="range" value="0" min="-100" max="100" step="1" /> <span class="fixedWidth" id="shadowHighlightMidtoneAmountDisplay">0</span>,<br />
+            <label for="shadowHighlightColorCorrectionAmount" style="display: inline-block;width: 180px;">Color correction amount</label> <input id="shadowHighlightColorCorrectionAmount" type="range" value="0" min="-100" max="100" step="1" /> <span class="fixedWidth" id="shadowHighlightColorCorrectionAmountDisplay">0</span>,<br />
+
+            <label for="shadowHighlightBlackClip" style="display: inline-block;width: 180px;">Black clip</label> <input id="shadowHighlightBlackClip" type="range" value="0.01" min="0" max="100" step="0.01" /> <span class="fixedWidth" id="shadowHighlightBlackClipDisplay">0.01</span>,<br />
+            <label for="shadowHighlightWhiteClip" style="display: inline-block;width: 180px;">White clip</label> <input id="shadowHighlightWhiteClip" type="range" value="0.01" min="0" max="100" step="0.01" /> <span class="fixedWidth" id="shadowHighlightWhiteClipDisplay">0.01</span>,<br />
+            <button id="shadowHighlightButton" type="button">Apply</button>
+        </p>
+        <p><img id="shadowHighlighted" /></p>
     </main>
 </body>
 </html>

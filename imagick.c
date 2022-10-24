@@ -1676,6 +1676,188 @@ void _IMCmdAutoGamma(const unsigned int width, const unsigned int height) {
     remove("gamma.txt");
 }
 
+void _IMShadowHighlight(const unsigned int width, const unsigned int height, const unsigned int samount, const unsigned int swidth, const double sradius, const unsigned int hamount, const unsigned int hwidth, const double hradius, const int mamount, const int camount, const double bclip, const double wclip) {
+    Arguments *args = newArguments(400);
+    appendArgument(args, "convert");
+    appendArgument(args, "-size");
+    char _size[64];
+    sprintf(_size, "%dx%d", width, height);
+    appendArgument(args, _size);
+    appendArgument(args, (char *)SRC_FILE);
+    appendArgument(args, "-write");
+    appendArgument(args, "mpr:input");
+    appendArgument(args, "+delete");
+
+    // get luminance channel for grayscale processing
+    appendArgument(args, "mpr:input");
+    appendArgument(args, "-colorspace");
+    appendArgument(args, "LAB");
+    appendArgument(args, "-channel");
+    appendArgument(args, "R");
+    appendArgument(args, "-separate");
+    appendArgument(args, "+channel");
+    if (bclip != 0.0 || wclip != 0.0) {
+        appendArgument(args, "-contrast-stretch");
+        char _clipping[64];
+        sprintf(_clipping, "%f%%x%f%%", bclip, wclip);
+        appendArgument(args, _clipping);
+    }
+    appendArgument(args, "-write");
+    appendArgument(args, "mpr:gray");
+    appendArgument(args, "+delete");
+
+    // process shadow
+    appendArgument(args, "mpr:input");
+    if (samount != 0) {
+        double dsradius = sradius / 3.0;
+        double dsamount = (double)samount / 20.0;
+        appendArgument(args, "-colorspace");
+        appendArgument(args, "LAB");
+        appendArgument(args, "-channel");
+        appendArgument(args, "R");
+        appendArgument(args, "+sigmoidal-contrast");
+        char _samount[64];
+        sprintf(_samount, "%f,100%%", dsamount);
+        appendArgument(args, _samount);
+        appendArgument(args, "+channel");
+        appendArgument(args, "-colorspace");
+        appendArgument(args, "sRGB");
+        appendArgument(args, "(");
+        appendArgument(args, "mpr:gray");
+        appendArgument(args, "-blur");
+        char _sradius[64];
+        sprintf(_sradius, "0x%f", dsradius);
+        appendArgument(args, _sradius);
+        appendArgument(args, "-black-threshold");
+        char _swidth[64];
+        sprintf(_swidth, "%d%%", swidth);
+        appendArgument(args, _swidth);
+        appendArgument(args, "-level");
+        char _swidth2[64];
+        sprintf(_swidth2, "%dx100%%", swidth);
+        appendArgument(args, _swidth2);
+        appendArgument(args, "-negate");
+        appendArgument(args, ")");
+        appendArgument(args, "-alpha");
+        appendArgument(args, "off");
+        appendArgument(args, "-compose");
+        appendArgument(args, "copy_opacity");
+        appendArgument(args, "-composite");
+    }
+    appendArgument(args, "-write");
+    appendArgument(args, "mpr:shadow");
+    appendArgument(args, "+delete");
+
+    // process highlight
+    appendArgument(args, "mpr:input");
+    if (hamount != 0) {
+        double dhradius = hradius / 3.0;
+        double dhamount = (double)hamount / 20.0;
+        appendArgument(args, "-colorspace");
+        appendArgument(args, "LAB");
+        appendArgument(args, "-channel");
+        appendArgument(args, "R");
+        appendArgument(args, "+sigmoidal-contrast");
+        char _hamount[64];
+        sprintf(_hamount, "%f,0%%", dhamount);
+        appendArgument(args, _hamount);
+        appendArgument(args, "+channel");
+        appendArgument(args, "-colorspace");
+        appendArgument(args, "sRGB");
+        appendArgument(args, "(");
+        appendArgument(args, "mpr:gray");
+        appendArgument(args, "-blur");
+        char _hradius[64];
+        sprintf(_hradius, "0x%f", dhradius);
+        appendArgument(args, _hradius);
+        appendArgument(args, "-white-threshold");
+        char _hwidth[64];
+        sprintf(_hwidth, "%d%%", 100 - hwidth);
+        appendArgument(args, _hwidth);
+        appendArgument(args, "-level");
+        char _hwidth2[64];
+        sprintf(_hwidth2, "0x%d%%", 100 - hwidth);
+        appendArgument(args, _hwidth2);
+        appendArgument(args, ")");
+        appendArgument(args, "-alpha");
+        appendArgument(args, "off");
+        appendArgument(args, "-compose");
+        appendArgument(args, "copy_opacity");
+        appendArgument(args, "-composite");
+    }
+    appendArgument(args, "-write");
+    appendArgument(args, "mpr:highlight");
+    appendArgument(args, "+delete");
+
+    appendArgument(args, "mpr:highlight");
+    appendArgument(args, "mpr:shadow");
+    appendArgument(args, "-define");
+    appendArgument(args, "compose:args=50");
+    appendArgument(args, "-compose");
+    appendArgument(args, "blend");
+    appendArgument(args, "-composite");
+
+    // set up midtone processing
+    if (mamount != 0) {
+        double dmamount = 0.0;
+        appendArgument(args, "-colorspace");
+        appendArgument(args, "LAB");
+        appendArgument(args, "-channel");
+        appendArgument(args, "R");
+        if (mamount < 0) {
+            appendArgument(args, "+sigmoidal-contrast");
+            dmamount = fabs((double)mamount) / 20.0;
+        } else {
+            appendArgument(args, "-sigmoidal-contrast");
+            dmamount = fabs((double)mamount) / 10.0;
+        }
+        char _mamount[64];
+        sprintf(_mamount, "%fx50%%", dmamount);
+        appendArgument(args, _mamount);
+        appendArgument(args, "+channel");
+        appendArgument(args, "-colorspace");
+        appendArgument(args, "sRGB");
+    }
+
+
+    // set up color correct
+    if (camount != 0) {
+        appendArgument(args, "-colorspace");
+        appendArgument(args, "LAB");
+        appendArgument(args, "-channel");
+        appendArgument(args, "BG");
+        if (camount < 0) appendArgument(args, "+sigmoidal-contrast");
+        else appendArgument(args, "-sigmoidal-contrast");
+        double dcamount = fabs((double)camount) / 20.0;
+        char _camount[64];
+        sprintf(_camount, "%f,50%%", dcamount);
+        appendArgument(args, _camount);
+        appendArgument(args, "+channel");
+        appendArgument(args, "-colorspace");
+        appendArgument(args, "sRGB");
+    }
+
+
+
+    appendArgument(args, "-alpha");
+    appendArgument(args, "off");
+
+    appendArgument(args, (char *)DST_FILE);
+    MagickWandGenesis();
+    ImageInfo *info = AcquireImageInfo();
+    ExceptionInfo *e = AcquireExceptionInfo();
+    MagickBooleanType cmdres = MagickCommandGenesis(info, ConvertImageCommand, args->argc, args->argv, NULL, e);
+    if (cmdres == MagickFalse) console_error("An error occured while executing command.", "");
+    if (e->severity != UndefinedException) {
+        console_error("Reason: ", e->reason);
+        console_error("Description: ", e->description);
+    }
+    info=DestroyImageInfo(info);
+    e=DestroyExceptionInfo(e);
+    MagickWandTerminus();
+    deleteArguments(args);
+}
+
 int main() {
     is_ready();
     return 0;

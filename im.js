@@ -323,6 +323,14 @@ let IMLucisArtEffect = ($src, gain, saturation, $dst) => {
     _IMClearFS();
 };
 
+let IMShadowHighlight = ($src, samount, swidth, sradius, hamount, hwidth, hradius, mamount, camount, bclip, wclip, $dst) => {
+    const [ width, height ] = _IMSetSource($src);
+    if (width === false) return;
+    _IMShadowHighlight(width, height, samount, swidth, sradius, hamount, hwidth, hradius, mamount, camount, bclip, wclip);
+    _IMSetDestination($dst, width, height);
+    _IMClearFS();
+};
+
 let _onIMReady = () => {
     _IMResize = Module.cwrap('_IMResize', null, ['number', 'number', 'number', 'number', 'number', 'number']);
     _IMCmdResize = Module.cwrap('_IMCmdResize', null, ['number', 'number', 'number', 'number', 'string']);
@@ -349,6 +357,7 @@ let _onIMReady = () => {
     _IMFrosted = Module.cwrap('_IMFrosted', null, ['number', 'number', 'number', 'number', 'number']);
     _IMLucisArtEffect = Module.cwrap('_IMLucisArtEffect', null, ['number', 'number', 'number', 'number']);
     _IMCmdAutoGamma = Module.cwrap('_IMCmdAutoGamma', null, ['number', 'number']);
+    _IMShadowHighlight = Module.cwrap('_IMShadowHighlight', null, ['number', 'number', 'number', 'number', 'number', 'number', 'number', 'number', 'number', 'number', 'number', 'number']);
 };
 
 $(window).on('IMReady', _onIMReady);
