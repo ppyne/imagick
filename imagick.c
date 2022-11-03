@@ -1677,7 +1677,7 @@ void _IMCmdAutoGamma(const unsigned int width, const unsigned int height) {
 }
 
 void _IMShadowHighlight(const unsigned int width, const unsigned int height, const unsigned int samount, const unsigned int swidth, const double sradius, const unsigned int hamount, const unsigned int hwidth, const double hradius, const int mamount, const int camount, const double bclip, const double wclip) {
-    Arguments *args = newArguments(400);
+    Arguments *args = newArguments(102);
     appendArgument(args, "convert");
     appendArgument(args, "-size");
     char _size[64];
@@ -1857,6 +1857,83 @@ void _IMShadowHighlight(const unsigned int width, const unsigned int height, con
     MagickWandTerminus();
     deleteArguments(args);
 }
+
+double degreesToPercent(unsigned int v) {
+    double d = (double)v;
+    if (d > 360.0) d = 360.0;
+    else if (d < 0.0) d = 0.0;
+    return (d / 360.0) * 100.0;
+}
+
+void _IMUnsaturateHue(const unsigned int width, const unsigned int height, const unsigned int hue, const unsigned int saturation, const unsigned int tolerance, const unsigned int ramping, const bool hcl) {
+    double dhue = degreesToPercent(hue);
+    double dtolerance = degreesToPercent(tolerance);
+    double dramping = degreesToPercent(ramping);
+    double addval = 50.0 - dhue;
+    double low = 100.0 - dtolerance - 2.0 * dramping;
+    double high = 100.0 - dtolerance;
+    Arguments *args = newArguments(35);
+    appendArgument(args, "convert");
+    appendArgument(args, "-size");
+    char _size[64];
+    sprintf(_size, "%dx%d", width, height);
+    appendArgument(args, _size);
+    appendArgument(args, (char *)SRC_FILE);
+    
+	appendArgument(args, "(");
+    appendArgument(args, "-clone");
+    appendArgument(args, "0");
+    appendArgument(args, "-define");
+    if (hcl) appendArgument(args, "modulate:colorspace=hcl");
+    else appendArgument(args, "modulate:colorspace=hsl");
+    appendArgument(args, "-modulate");
+    char _saturation[64];
+    sprintf(_saturation, "100,%d,100", saturation);
+    appendArgument(args, _saturation);
+    appendArgument(args, ")");
+    appendArgument(args, "(");
+    appendArgument(args, "-clone");
+    appendArgument(args, "0");
+    appendArgument(args, "-colorspace");
+    if (hcl) appendArgument(args, "hcl");
+    else appendArgument(args, "hsl");
+    appendArgument(args, "-channel");
+    appendArgument(args, "0");
+    appendArgument(args, "-separate");
+    appendArgument(args, "+channel");
+    appendArgument(args, "-evaluate");
+    appendArgument(args, "AddModulus");
+    char _addval[64];
+    sprintf(_addval, "%.3f%%", addval);
+    appendArgument(args, _addval);
+    appendArgument(args, "-solarize");
+    appendArgument(args, "50%");
+    appendArgument(args, "-level");
+    appendArgument(args, "0x50%");
+    appendArgument(args, "-level");
+    char _level[64];
+    sprintf(_level, "%.3f%%,%.3f%%", low, high);
+    appendArgument(args, _level);
+    appendArgument(args, ")");
+    appendArgument(args, "-compose");
+    appendArgument(args, "Over");
+    appendArgument(args, "-composite");
+    appendArgument(args, (char *)DST_FILE);
+    MagickWandGenesis();
+    ImageInfo *info = AcquireImageInfo();
+    ExceptionInfo *e = AcquireExceptionInfo();
+    MagickBooleanType cmdres = MagickCommandGenesis(info, ConvertImageCommand, args->argc, args->argv, NULL, e);
+    if (cmdres == MagickFalse) console_error("An error occured while executing command.", "");
+    if (e->severity != UndefinedException) {
+        console_error("Reason: ", e->reason);
+        console_error("Description: ", e->description);
+    }
+    info=DestroyImageInfo(info);
+    e=DestroyExceptionInfo(e);
+    MagickWandTerminus();
+    deleteArguments(args);
+}
+
 
 int main() {
     is_ready();

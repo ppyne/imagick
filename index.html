@@ -262,6 +262,17 @@
                 $('#shadowHighlighted')
             );
         };
+        let onUnsaturateHueButton = () => {
+            IMUnsaturateHue(
+                $('#src'),
+                parseInt($('#unsaturateHueHue').val()),
+                parseInt($('#unsaturateHueSaturation').val()) + 100,
+                parseInt($('#unsaturateHueTolerance').val()),
+                parseInt($('#unsaturateHueRamping').val()),
+                0,
+                $('#unsaturateHued')
+            );
+        }
         let onIMReady = () => {
             let $filters = $('#filters');
             const sortedFilters = [...IMEnumFilters].sort();
@@ -426,6 +437,20 @@
             $('#shadowHighlightWhiteClip').on('input', () => {
                 $('#shadowHighlightWhiteClipDisplay').text($('#shadowHighlightWhiteClip').val());
             });
+            $('#unsaturateHueHue').on('input', () => {
+                $('#unsaturateHueHueDisplay').text($('#unsaturateHueHue').val());
+                $('#unsaturateHueHueDisplay').css('background-color', 'hsl('+$('#unsaturateHueHue').val()+', 100%, 70%)')
+            });
+            $('#unsaturateHueSaturation').on('input', () => {
+                $('#unsaturateHueSaturationDisplay').text($('#unsaturateHueSaturation').val());
+            });
+            $('#unsaturateHueTolerance').on('input', () => {
+                $('#unsaturateHueToleranceDisplay').text($('#unsaturateHueTolerance').val());
+            });
+            $('#unsaturateHueRamping').on('input', () => {
+                $('#unsaturateHueRampingDisplay').text($('#unsaturateHueRamping').val());
+            });
+            $('#unsaturateHueButton').on('click', onUnsaturateHueButton);
             $('#shadowHighlightButton').on('click', onShadowHighlightButton);
             $('#lucisArtEffectButton').on('click', onLucisArtEffectButton);
             $('#frostedButton').on('click', onFrostedButton);
@@ -478,6 +503,8 @@
             <option value="tulips.jpg">tulips.jpg</option>
             <option value="woman_with_earing.jpg">woman_with_earing.jpg</option>
             <option value="duck_in_pond.jpg">duck_in_pond.jpg</option>
+            <option value="hue_grad.png">hue_grad.png</option>
+            <option value="hue_grad_half.png">hue_grad_half.png</option>
         </select></p>
         <p><img id="src" src="peppers.png" /></p>
         <h2>Resize</h2>
@@ -630,6 +657,16 @@
             <button id="shadowHighlightButton" type="button">Apply</button>
         </p>
         <p><img id="shadowHighlighted" /></p>
+        <h2>Unsaturate Hue</h2>
+        <p>According to Fred Weinhaus</p>
+        <p>
+            <label for="unsaturateHueHue">Hue</label> <input id="unsaturateHueHue" type="range" value="0" min="0" max="360" step="1" /> <span class="fixedWidth" id="unsaturateHueHueDisplay" style="background-color: hsl(0, 100%, 70%);">0</span>,
+            <label for="unsaturateHueSaturation">Saturation</label> <input id="unsaturateHueSaturation" type="range" value="0" min="-100" max="100" step="1" /> <span class="fixedWidth" id="unsaturateHueSaturationDisplay">0</span>,
+            <label for="unsaturateHueTolerance">Tolerance</label> <input id="unsaturateHueTolerance" type="range" value="30" min="0" max="360" step="1" /> <span class="fixedWidth" id="unsaturateHueToleranceDisplay">30</span>,
+            <label for="unsaturateHueRamping">Ramping</label> <input id="unsaturateHueRamping" type="range" value="30" min="0" max="360" step="1" /> <span class="fixedWidth" id="unsaturateHueRampingDisplay">30</span>,
+            <button id="unsaturateHueButton" type="button">Apply</button>
+        </p>
+        <p><img id="unsaturateHued" /></p>
     </main>
 </body>
 </html>
