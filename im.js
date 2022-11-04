@@ -339,6 +339,14 @@ let IMUnsaturateHue = ($src, hue, saturation, tolerance, ramping, hcl, $dst) => 
     _IMClearFS();
 };
 
+let IMTurbulence = ($src, distort, distx, disty, smooth, separate, $dst, virtualpixel = 'mirror', bgcolor = '#000000') => {
+    const [ width, height ] = _IMSetSource($src);
+    if (width === false) return;
+    _IMTurbulence(width, height, distort, distx, disty, smooth, separate, virtualpixel, bgcolor);
+    _IMSetDestination($dst, width, height);
+    _IMClearFS();
+};
+
 let _onIMReady = () => {
     _IMResize = Module.cwrap('_IMResize', null, ['number', 'number', 'number', 'number', 'number', 'number']);
     _IMCmdResize = Module.cwrap('_IMCmdResize', null, ['number', 'number', 'number', 'number', 'string']);
@@ -367,6 +375,7 @@ let _onIMReady = () => {
     _IMCmdAutoGamma = Module.cwrap('_IMCmdAutoGamma', null, ['number', 'number']);
     _IMShadowHighlight = Module.cwrap('_IMShadowHighlight', null, ['number', 'number', 'number', 'number', 'number', 'number', 'number', 'number', 'number', 'number', 'number', 'number']);
     _IMUnsaturateHue = Module.cwrap('_IMUnsaturateHue', null, ['number', 'number', 'number', 'number', 'number', 'number', 'number']);
+    _IMTurbulence = Module.cwrap('_IMTurbulence', null, ['number', 'number', 'number', 'number', 'number', 'number', 'number', 'string', 'string']);
 };
 
 $(window).on('IMReady', _onIMReady);

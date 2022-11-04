@@ -1084,7 +1084,7 @@
 
 /* Whether hdri is enabled or not */
 #ifndef MAGICKCORE_HDRI_ENABLE_OBSOLETE_IN_H
-#define MAGICKCORE_HDRI_ENABLE_OBSOLETE_IN_H 0
+#define MAGICKCORE_HDRI_ENABLE_OBSOLETE_IN_H 1
 #endif
 
 /* Define if you have libheif library */
@@ -1205,7 +1205,7 @@
 
 /* Define to the full name and version of this package. */
 #ifndef MAGICKCORE_PACKAGE_STRING
-#define MAGICKCORE_PACKAGE_STRING "ImageMagick 6.9.12-62"
+#define MAGICKCORE_PACKAGE_STRING "ImageMagick 6.9.12-66"
 #endif
 
 /* Define to the one symbol short name of this package. */
@@ -1220,7 +1220,7 @@
 
 /* Define to the version of this package. */
 #ifndef MAGICKCORE_PACKAGE_VERSION
-#define MAGICKCORE_PACKAGE_VERSION "6.9.12-62"
+#define MAGICKCORE_PACKAGE_VERSION "6.9.12-66"
 #endif
 
 /* Define if you have PANGOCAIRO library */
@@ -1244,7 +1244,7 @@
 
 /* Number of bits in a pixel Quantum (8/16/32/64) */
 #ifndef MAGICKCORE_QUANTUM_DEPTH_OBSOLETE_IN_H
-#define MAGICKCORE_QUANTUM_DEPTH_OBSOLETE_IN_H 8
+#define MAGICKCORE_QUANTUM_DEPTH_OBSOLETE_IN_H 16
 #endif
 
 /* Define if you have RAQM library */

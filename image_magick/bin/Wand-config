@@ -35,7 +35,7 @@ while test $# -gt 0; do
       echo $exec_prefix
       ;;
     --version)
-      echo '6.9.12-62 Q8 '
+      echo '6.9.12-66 Q16 HDRI'
       ;;
     --cflags)
       /usr/local/bin/pkg-config --cflags MagickWand

@@ -273,6 +273,17 @@
                 $('#unsaturateHued')
             );
         }
+        let onTurbulenceButton = () => {
+            IMTurbulence(
+                $('#src'),
+                parseInt($('#turbulenceMethod').val()),
+                parseInt($('#turbulenceDistance').val()),
+                parseInt($('#turbulenceDistance').val()),
+                parseInt($('#turbulenceSmooth').val()),
+                parseInt($('#turbulenceChannels').val()),
+                $('#turbulenced')
+            );
+        }
         let onIMReady = () => {
             let $filters = $('#filters');
             const sortedFilters = [...IMEnumFilters].sort();
@@ -450,6 +461,13 @@
             $('#unsaturateHueRamping').on('input', () => {
                 $('#unsaturateHueRampingDisplay').text($('#unsaturateHueRamping').val());
             });
+            $('#turbulenceDistance').on('input', () => {
+                $('#turbulenceDistanceDisplay').text($('#turbulenceDistance').val());
+            });
+            $('#turbulenceSmooth').on('input', () => {
+                $('#turbulenceSmoothDisplay').text($('#turbulenceSmooth').val());
+            });
+            $('#turbulenceButton').on('click', onTurbulenceButton);
             $('#unsaturateHueButton').on('click', onUnsaturateHueButton);
             $('#shadowHighlightButton').on('click', onShadowHighlightButton);
             $('#lucisArtEffectButton').on('click', onLucisArtEffectButton);
@@ -505,6 +523,8 @@
             <option value="duck_in_pond.jpg">duck_in_pond.jpg</option>
             <option value="hue_grad.png">hue_grad.png</option>
             <option value="hue_grad_half.png">hue_grad_half.png</option>
+            <option value="barn.jpg">barn.jpg</option>
+            <option value="freckles2.jpg">freckles2.jpg</option>
         </select></p>
         <p><img id="src" src="peppers.png" /></p>
         <h2>Resize</h2>
@@ -667,6 +687,16 @@
             <button id="unsaturateHueButton" type="button">Apply</button>
         </p>
         <p><img id="unsaturateHued" /></p>
+        <h2>Turbulence</h2>
+        <p>According to Fred Weinhaus</p>
+        <p>
+            <label for="turbulenceMethod">Method</label> <select id="turbulenceMethod"><option value="0">Displace</option><option value="1">Distort</option></select>, 
+            <label for="turbulenceDistance">Distance</label> <input id="turbulenceDistance" type="range" value="20" min="0" max="1000" step="1" /> <span class="fixedWidth" id="turbulenceDistanceDisplay">20</span>,
+            <label for="turbulenceSmooth">Smooth</label> <input id="turbulenceSmooth" type="range" value="20" min="0" max="100" step="1" /> <span class="fixedWidth" id="turbulenceSmoothDisplay">20</span>,
+            <label for="turbulenceChannels">Channels</label> <select id="turbulenceChannels"><option value="0">Together</option><option value="1">Separate</option></select>, 
+            <button id="turbulenceButton" type="button">Apply</button>
+        </p>
+        <p><img id="turbulenced" /></p>
     </main>
 </body>
 </html>

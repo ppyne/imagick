@@ -1,11 +1,11 @@
-!/bin/bash
+#!/bin/bash
 
 set -e
 
 BUILD_IMAGE_MAGICK=1
-BUILD_IMAGICK=1
+BUILD_IMAGICK=0
 
-IMAGE_MAGICK=ImageMagick6-6.9.12-62
+IMAGE_MAGICK=ImageMagick6-6.9.12-66
 
 export CFLAGS="-O3"
 export DESTINATION="`pwd`/image_magick"
@@ -13,7 +13,7 @@ export CPPFLAGS="-I${DESTINATION}/include"
 export LDFLAGS="-L${DESTINATION}/lib -sASSERTIONS=1 -sALLOW_MEMORY_GROWTH=1"
 export PKG_CONFIG_PATH="${DESTINATION}/lib/pkgconfig/"
 
-if [ $BUILD_IMAGICK -eq 1 ]; then
+if [ $BUILD_IMAGE_MAGICK -eq 1 ]; then
 
     rm -rf "${IMAGE_MAGICK}"
     rm -rf "${DESTINATION}"
@@ -27,8 +27,8 @@ if [ $BUILD_IMAGICK -eq 1 ]; then
         --without-perl \
         --enable-static \
         --disable-shared \
-        --with-quantum-depth=8 \
-        --disable-hdri \
+        --with-quantum-depth=16 \
+        --enable-hdri \
         --disable-docs \
         --disable-largefile \
         --without-png \

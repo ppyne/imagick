@@ -139,6 +139,7 @@ void _IMResize(const unsigned int srcWidth, const unsigned int srcHeight, const 
     MagickWandGenesis();
     magick_wand = NewMagickWand();
     MagickSetSize(magick_wand, srcWidth, srcHeight);
+    MagickSetDepth(magick_wand, 8);
     status = MagickReadImage(magick_wand, SRC_FILE);
     if (status == MagickFalse) {
         strwanderror(magick_wand);
@@ -161,6 +162,7 @@ void _IMCharcoal(const unsigned int width, const unsigned int height, const doub
     MagickWandGenesis();
     magick_wand = NewMagickWand();
     MagickSetSize(magick_wand, width, height);
+    MagickSetDepth(magick_wand, 8);
     status = MagickReadImage(magick_wand, SRC_FILE);
     if (status == MagickFalse) {
         strwanderror(magick_wand);
@@ -183,6 +185,7 @@ void _IMSketch(const unsigned int width, const unsigned int height, const double
     MagickWandGenesis();
     magick_wand = NewMagickWand();
     MagickSetSize(magick_wand, width, height);
+    MagickSetDepth(magick_wand, 8);
     status = MagickReadImage(magick_wand, SRC_FILE);
     if (status == MagickFalse) {
         strwanderror(magick_wand);
@@ -205,6 +208,7 @@ void _IMQuantize(const unsigned int width, const unsigned int height, const size
     MagickWandGenesis();
     magick_wand = NewMagickWand();
     MagickSetSize(magick_wand, width, height);
+    MagickSetDepth(magick_wand, 8);
     status = MagickReadImage(magick_wand, SRC_FILE);
     if (status == MagickFalse) {
         strwanderror(magick_wand);
@@ -227,6 +231,7 @@ void _IMPosterize(const unsigned int width, const unsigned int height, const siz
     MagickWandGenesis();
     magick_wand = NewMagickWand();
     MagickSetSize(magick_wand, width, height);
+    MagickSetDepth(magick_wand, 8);
     status = MagickReadImage(magick_wand, SRC_FILE);
     if (status == MagickFalse) {
         strwanderror(magick_wand);
@@ -242,6 +247,12 @@ void _IMPosterize(const unsigned int width, const unsigned int height, const siz
         }
     }
 }
+
+#if (MAGICKCORE_QUANTUM_DEPTH == 8)
+    #define TO8BITS(C) (unsigned char)C
+#elif (MAGICKCORE_QUANTUM_DEPTH == 16)
+    #define TO8BITS(C) (unsigned char)round(C / 257.0)
+#endif
 
 void _IMListUniqueColors(const unsigned int width, const unsigned int height) {
     MagickBooleanType status;
@@ -259,6 +270,7 @@ void _IMListUniqueColors(const unsigned int width, const unsigned int height) {
         MagickWandGenesis();
         magick_wand = NewMagickWand();
         MagickSetSize(magick_wand, width, height);
+        MagickSetDepth(magick_wand, 8);
         status = MagickReadImage(magick_wand, SRC_FILE);
         if (status == MagickFalse) {
             fwrite((void *)"]", 1, 1, output);
@@ -275,7 +287,7 @@ void _IMListUniqueColors(const unsigned int width, const unsigned int height) {
                         row = PixelGetNextIteratorRow(iter, &cols);
                         for (x = 0; x < cols; ++x) {
                             PixelGetMagickColor(row[x], &pixel);
-                            sprintf(buffer, "\"#%02X%02X%02X\"", (unsigned char)pixel.red, (unsigned char)pixel.green, (unsigned char)pixel.blue);
+                            sprintf(buffer, "\"#%02X%02X%02X\"", TO8BITS(pixel.red), TO8BITS(pixel.green), TO8BITS(pixel.blue));
                             if (first == true) first = false;
                             else fwrite((void *)",", 1, 1, output);
                             fwrite((void *)buffer, strlen(buffer), 1, output);
@@ -309,6 +321,7 @@ void _IMQuantizeAndListUniqueColors(const unsigned int width, const unsigned int
         MagickWandGenesis();
         magick_wand = NewMagickWand();
         MagickSetSize(magick_wand, width, height);
+        MagickSetDepth(magick_wand, 8);
         status = MagickReadImage(magick_wand, SRC_FILE);
         if (status == MagickFalse) {
             fwrite((void *)"]", 1, 1, output);
@@ -329,7 +342,7 @@ void _IMQuantizeAndListUniqueColors(const unsigned int width, const unsigned int
                         row = PixelGetNextIteratorRow(iter, &cols);
                         for (x = 0; x < cols; ++x) {
                             PixelGetMagickColor(row[x], &pixel);
-                            sprintf(buffer, "[%d,%d,%d]", (unsigned char)pixel.red, (unsigned char)pixel.green, (unsigned char)pixel.blue);
+                            sprintf(buffer, "[%d,%d,%d]", TO8BITS(pixel.red), TO8BITS(pixel.green), TO8BITS(pixel.blue));
                             if (first == true) first = false;
                             else fwrite((void *)",", 1, 1, output);
                             fwrite((void *)buffer, strlen(buffer), 1, output);
@@ -354,6 +367,7 @@ void _IMAutoLevel(const unsigned int width, const unsigned int height, const int
     MagickWandGenesis();
     magick_wand = NewMagickWand();
     MagickSetSize(magick_wand, width, height);
+    MagickSetDepth(magick_wand, 8);
     status = MagickReadImage(magick_wand, SRC_FILE);
     if (status == MagickFalse) {
         strwanderror(magick_wand);
@@ -376,6 +390,7 @@ void _IMAutoGamma(const unsigned int width, const unsigned int height, const int
     MagickWandGenesis();
     magick_wand = NewMagickWand();
     MagickSetSize(magick_wand, width, height);
+    MagickSetDepth(magick_wand, 8);
     status = MagickReadImage(magick_wand, SRC_FILE);
     if (status == MagickFalse) {
         strwanderror(magick_wand);
@@ -398,6 +413,7 @@ void _IMContrast(const unsigned int width, const unsigned int height, bool incre
     MagickWandGenesis();
     magick_wand = NewMagickWand();
     MagickSetSize(magick_wand, width, height);
+    MagickSetDepth(magick_wand, 8);
     status = MagickReadImage(magick_wand, SRC_FILE);
     if (status == MagickFalse) {
         strwanderror(magick_wand);
@@ -841,11 +857,13 @@ void _IMMorphology(const unsigned int width, const unsigned int height, const ch
     sprintf(strsize, "%dx%d", width, height);
     sprintf(morphology, "%s", morphology_name);
     sprintf(params, "%s", parameters);
-    int argcount = 8;
+    int argcount = 10;
     char *cmdargs[] = {
         "convert",
         "-size",
         strsize,
+        "-depth",
+        "8",
         (char *)SRC_FILE,
         "-morphology",
         morphology,
@@ -874,11 +892,13 @@ void _IMSigmoidalContrast(const unsigned int width, const unsigned int height, c
     sprintf(strsize, "%dx%d", width, height);
     sprintf(command, "%csigmoidal-contrast", decrease?'+':'-');
     sprintf(params, "%dx%d%%", contrast, mid_point);
-    int argcount = 7;
+    int argcount = 9;
     char *cmdargs[] = {
         "convert",
         "-size",
         strsize,
+        "-depth",
+        "8",
         (char *)SRC_FILE,
         command,
         params,
@@ -907,11 +927,13 @@ void _IMCmdResize(const unsigned int width, const unsigned int height, const uns
     sprintf(filter_name, "%s", filter);
     sprintf(params, "%dx%d!", dstWidth, dstHeight);
     char **cmdargs;
-    int argcount = 9;
+    int argcount = 11;
     char *cmdargsFilter[] = {
         "convert",
         "-size",
         strsize,
+        "-depth",
+        "8",
         (char *)SRC_FILE,
         "-filter",
         filter_name,
@@ -924,6 +946,8 @@ void _IMCmdResize(const unsigned int width, const unsigned int height, const uns
         "convert",
         "-size",
         strsize,
+        "-depth",
+        "8",
         (char *)SRC_FILE,
         "-resize",
         params,
@@ -932,7 +956,7 @@ void _IMCmdResize(const unsigned int width, const unsigned int height, const uns
     };
     if (strlen(filter_name) == 0) {
         cmdargs = cmdargsNoFilter;
-        argcount = 7;
+        argcount = 9;
     } else cmdargs = cmdargsFilter;
     MagickWandGenesis();
     ImageInfo *info = AcquireImageInfo();
@@ -956,11 +980,13 @@ void _IMExposure(const unsigned int width, const unsigned int height, const doub
     sprintf(strsize, "%dx%d", width, height);
     sprintf(params, "%f,%f", gain, offset);
     sprintf(_gamma, "%f", gamma);
-    int argcount = 14;
+    int argcount = 16;
     char *cmdargs[] = {
         "convert",
         "-size",
         strsize,
+        "-depth",
+        "8",
         (char *)SRC_FILE,
         "-colorspace",
         "RGB",
@@ -996,12 +1022,14 @@ void _IMGlow(const unsigned int width, const unsigned int height, const double a
     if (softening > 0) sprintf(_amount, "%f", amount - 1.0);
     else sprintf(_amount, "%f", amount);
     if (softening > 0) sprintf(sigma, "0x%f", (double)softening / 3.0);
-    int argcount = 8;
+    int argcount = 10;
     char **cmdargs;
     char *cmdargsNoSoftening[] = {
         "convert",
         "-size",
         strsize,
+        "-depth",
+        "8",
         (char *)SRC_FILE,
         "-evaluate",
         "multiply",
@@ -1013,6 +1041,8 @@ void _IMGlow(const unsigned int width, const unsigned int height, const double a
         "convert",
         "-size",
         strsize,
+        "-depth",
+        "8",
         (char *)SRC_FILE,
         "(",
         "+clone",
@@ -1030,7 +1060,7 @@ void _IMGlow(const unsigned int width, const unsigned int height, const double a
     };
     if (softening != 0.0) {
         cmdargs = cmdargsSoftening;
-        argcount = 16;
+        argcount = 18;
     } else cmdargs = cmdargsNoSoftening;
     MagickWandGenesis();
     ImageInfo *info = AcquireImageInfo();
@@ -1047,12 +1077,14 @@ void _IMGlow(const unsigned int width, const unsigned int height, const double a
 }
 
 void _IMSobel(const unsigned int width, const unsigned int height) {
-    Arguments *args = newArguments(14);
+    Arguments *args = newArguments(16);
     appendArgument(args, "convert");
     appendArgument(args, "-size");
     char _size[64];
     sprintf(_size, "%dx%d", width, height);
     appendArgument(args, _size);
+    appendArgument(args, "-depth");
+    appendArgument(args, "8");
     appendArgument(args, (char *)SRC_FILE);
     appendArgument(args, "-channel");
     appendArgument(args, "rgb");
@@ -1080,12 +1112,14 @@ void _IMSobel(const unsigned int width, const unsigned int height) {
 }
 
 void _IMWatercolor(const unsigned int width, const unsigned int height, const unsigned int smoothing, const double edge, const unsigned int mixing, const double contrast) {
-    Arguments *args = newArguments(42);
+    Arguments *args = newArguments(44);
     appendArgument(args, "convert");
     appendArgument(args, "-size");
     char _size[64];
     sprintf(_size, "%dx%d", width, height);
     appendArgument(args, _size);
+    appendArgument(args, "-depth");
+    appendArgument(args, "8");
     appendArgument(args, (char *)SRC_FILE);
     appendArgument(args, "-channel");
     appendArgument(args, "rgb");
@@ -1153,12 +1187,14 @@ void _IMWatercolor(const unsigned int width, const unsigned int height, const un
 }
 
 void _IMDisperse(const unsigned int width, const unsigned int height, const unsigned int spread, const unsigned int density, const unsigned int curviness, const int reseed) {
-    Arguments *args = newArguments(40);
+    Arguments *args = newArguments(44);
     appendArgument(args, "convert");
     appendArgument(args, "-size");
     char _size[64];
     sprintf(_size, "%dx%d", width, height);
     appendArgument(args, _size);
+    appendArgument(args, "-depth");
+    appendArgument(args, "8");
     appendArgument(args, "xc:");
     if (reseed >= 0) {
         appendArgument(args, "-seed");
@@ -1197,6 +1233,8 @@ void _IMDisperse(const unsigned int width, const unsigned int height, const unsi
     appendArgument(args, "-separate");
     appendArgument(args, "-size");
     appendArgument(args, _size);
+    appendArgument(args, "-depth");
+    appendArgument(args, "8");
     appendArgument(args, (char *)SRC_FILE);
     appendArgument(args, "-insert");
     appendArgument(args, "0");
@@ -1252,12 +1290,14 @@ void randomPoints(const unsigned perimeterX, const unsigned perimeterY, const un
 
 void exportColorsAndCoords(const unsigned int width, const unsigned int height, const unsigned int n, const unsigned int seed) {
     randomPoints(width, height, n, seed);
-    Arguments *args = newArguments(24);
+    Arguments *args = newArguments(26);
     appendArgument(args, "convert");
     appendArgument(args, "-size");
     char _size[64];
     sprintf(_size, "%dx%d", width, height);
     appendArgument(args, _size);
+    appendArgument(args, "-depth");
+    appendArgument(args, "8");
     appendArgument(args, (char *)SRC_FILE);
     appendArgument(args, "-channel");
     appendArgument(args, "rgb");
@@ -1298,13 +1338,14 @@ void exportColorsAndCoords(const unsigned int width, const unsigned int height, 
 
 void _IMCrystallize(const unsigned int width, const unsigned int height, const unsigned int n, const unsigned int seed) {
     exportColorsAndCoords(width, height, n, seed);
-    Arguments *args = newArguments(8);
+    Arguments *args = newArguments(10);
     appendArgument(args, "convert");
     appendArgument(args, "-size");
     char _size[64];
     sprintf(_size, "%dx%d", width, height);
     appendArgument(args, _size);
-
+    appendArgument(args, "-depth");
+    appendArgument(args, "8");
     appendArgument(args, "xc:");
     appendArgument(args, "-sparse-color");
     appendArgument(args, "Voronoi");
@@ -1327,12 +1368,14 @@ void _IMCrystallize(const unsigned int width, const unsigned int height, const u
 }
 
 void _IMSoftLight(const unsigned int width, const unsigned int height, const unsigned int intensity, const unsigned int smooth, const unsigned int percent, const char *color) {
-    Arguments *args = newArguments(44);
+    Arguments *args = newArguments(46);
     appendArgument(args, "convert");
     appendArgument(args, "-size");
     char _size[64];
     sprintf(_size, "%dx%d", width, height);
     appendArgument(args, _size);
+    appendArgument(args, "-depth");
+    appendArgument(args, "8");
     appendArgument(args, (char *)SRC_FILE);
     appendArgument(args, "(");
     appendArgument(args, "-clone");
@@ -1396,12 +1439,14 @@ void _IMSoftLight(const unsigned int width, const unsigned int height, const uns
 }
 
 void _IMDaveHillEffect(const unsigned int width, const unsigned int height, const double brightness, const double contrast, const unsigned int gain) {
-    Arguments *args = newArguments(51);
+    Arguments *args = newArguments(53);
     appendArgument(args, "convert");
     appendArgument(args, "-size");
     char _size[64];
     sprintf(_size, "%dx%d", width, height);
     appendArgument(args, _size);
+    appendArgument(args, "-depth");
+    appendArgument(args, "8");
     appendArgument(args, (char *)SRC_FILE);
     appendArgument(args, "-channel");
     appendArgument(args, "rgb");
@@ -1480,12 +1525,14 @@ void _IMDaveHillEffect(const unsigned int width, const unsigned int height, cons
 }
 
 void _IMFrosted(const unsigned int width, const unsigned int height, const unsigned int spread, const unsigned int blur, const int seed) {
-    Arguments *args = newArguments(44);
+    Arguments *args = newArguments(46);
     appendArgument(args, "convert");
     appendArgument(args, "-size");
     char _size[64];
     sprintf(_size, "%dx%d", width, height);
     appendArgument(args, _size);
+    appendArgument(args, "-depth");
+    appendArgument(args, "8");
     appendArgument(args, (char *)SRC_FILE);
     if (blur != 0) {
         appendArgument(args, "-blur");
@@ -1554,12 +1601,14 @@ void _IMFrosted(const unsigned int width, const unsigned int height, const unsig
 
 void _IMLucisArtEffect(const unsigned int width, const unsigned int height, const double gain, const unsigned int saturation) {
 
-    Arguments *args = newArguments(39);
+    Arguments *args = newArguments(41);
     appendArgument(args, "convert");
     appendArgument(args, "-size");
     char _size[64];
     sprintf(_size, "%dx%d", width, height);
     appendArgument(args, _size);
+    appendArgument(args, "-depth");
+    appendArgument(args, "8");
     appendArgument(args, (char *)SRC_FILE);
     appendArgument(args, "-channel");
     appendArgument(args, "rgb");
@@ -1617,12 +1666,14 @@ void _IMLucisArtEffect(const unsigned int width, const unsigned int height, cons
 
 void calcLuminanceGamma(const unsigned int width, const unsigned int height) {
     remove("gamma.txt");
-    Arguments *args = newArguments(9);
+    Arguments *args = newArguments(11);
     appendArgument(args, "convert");
     appendArgument(args, "-size");
     char _size[64];
     sprintf(_size, "%dx%d", width, height);
     appendArgument(args, _size);
+    appendArgument(args, "-depth");
+    appendArgument(args, "8");
     appendArgument(args, (char *)SRC_FILE);
     appendArgument(args, "-colorspace");
     appendArgument(args, "Rec709Luma");
@@ -1646,12 +1697,14 @@ void calcLuminanceGamma(const unsigned int width, const unsigned int height) {
 
 void _IMCmdAutoGamma(const unsigned int width, const unsigned int height) {
     calcLuminanceGamma(width, height);
-    Arguments *args = newArguments(7);
+    Arguments *args = newArguments(9);
     appendArgument(args, "convert");
     appendArgument(args, "-size");
     char _size[64];
     sprintf(_size, "%dx%d", width, height);
     appendArgument(args, _size);
+    appendArgument(args, "-depth");
+    appendArgument(args, "8");
     appendArgument(args, (char *)SRC_FILE);
     appendArgument(args, "-gamma");
     char *_gamma = loadArgument("gamma.txt");
@@ -1677,12 +1730,14 @@ void _IMCmdAutoGamma(const unsigned int width, const unsigned int height) {
 }
 
 void _IMShadowHighlight(const unsigned int width, const unsigned int height, const unsigned int samount, const unsigned int swidth, const double sradius, const unsigned int hamount, const unsigned int hwidth, const double hradius, const int mamount, const int camount, const double bclip, const double wclip) {
-    Arguments *args = newArguments(102);
+    Arguments *args = newArguments(104);
     appendArgument(args, "convert");
     appendArgument(args, "-size");
     char _size[64];
     sprintf(_size, "%dx%d", width, height);
     appendArgument(args, _size);
+    appendArgument(args, "-depth");
+    appendArgument(args, "8");
     appendArgument(args, (char *)SRC_FILE);
     appendArgument(args, "-write");
     appendArgument(args, "mpr:input");
@@ -1872,12 +1927,14 @@ void _IMUnsaturateHue(const unsigned int width, const unsigned int height, const
     double addval = 50.0 - dhue;
     double low = 100.0 - dtolerance - 2.0 * dramping;
     double high = 100.0 - dtolerance;
-    Arguments *args = newArguments(35);
+    Arguments *args = newArguments(37);
     appendArgument(args, "convert");
     appendArgument(args, "-size");
     char _size[64];
     sprintf(_size, "%dx%d", width, height);
     appendArgument(args, _size);
+    appendArgument(args, "-depth");
+    appendArgument(args, "8");
     appendArgument(args, (char *)SRC_FILE);
     
 	appendArgument(args, "(");
@@ -1934,6 +1991,189 @@ void _IMUnsaturateHue(const unsigned int width, const unsigned int height, const
     deleteArguments(args);
 }
 
+void storeColorsXml() {
+    const char *filename = "colors.xml";
+    if (access(filename, F_OK) == 0) return;
+    const char data[] = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n"
+"<!DOCTYPE colormap [\n"
+"<!ELEMENT colormap (color)*>\n"
+"<!ELEMENT color (#PCDATA)>\n"
+"<!ATTLIST color name CDATA \"0\">\n"
+"<!ATTLIST color color CDATA \"rgb(0,0,0)\">\n"
+"<!ATTLIST color compliance CDATA \"SVG\">\n"
+"]>\n"
+"<!--\n"
+"  Associate a color name with its red, green, blue, and alpha intensities.\n"
+"\n"
+"  A number of methods and options require a color parameter. It is often\n"
+"  convenient to refer to a color by name (e.g. white) rather than by hex\n"
+"  value (e.g. #fff). This file maps a color name to its equivalent red,\n"
+"  green, blue, and alpha intensities (e.g. for white, red = 255, green =\n"
+"  255, blue = 255, and alpha = 0).\n"
+"-->\n"
+"<colormap>\n"
+"  <!-- <color name=\"none\" color=\"rgba(0,0,0,0)\" compliance=\"SVG, XPM\"/> -->\n"
+"  <!-- <color name=\"black\" color=\"rgb(0,0,0)\" compliance=\"SVG, X11, XPM\"/> -->\n"
+"  <!-- <color name=\"red\" color=\"rgb(255,0,0)\" compliance=\"SVG, X11, XPM\"/> -->\n"
+"  <!-- <color name=\"magenta\" color=\"rgb(255,0,255)\" compliance=\"SVG, X11, XPM\"/> -->\n"
+"  <!-- <color name=\"green\" color=\"rgb(0,128,0)\" compliance=\"SVG\"/> -->\n"
+"  <!-- <color name=\"cyan\" color=\"rgb(0,255,255)\" compliance=\"SVG, X11, XPM\"/> -->\n"
+"  <!-- <color name=\"blue\" color=\"rgb(0,0,255)\" compliance=\"SVG, X11, XPM\"/> -->\n"
+"  <!-- <color name=\"yellow\" color=\"rgb(255,255,0)\" compliance=\"SVG, X11, XPM\"/> -->\n"
+"  <!-- <color name=\"white\" color=\"rgb(255,255,255)\" compliance=\"SVG, X11\"/> -->\n"
+"</colormap>\n";
+    size_t len = strlen(data);
+    FILE *handle = fopen(filename, "w");
+    if (handle != NULL) {
+        fwrite((void *)data, len, 1, handle);
+        fclose(handle);
+    } else {
+        console_error("Error while opening colors.xml for writing: ", strerror(errno));
+    }
+}
+
+void _IMTurbulence(const unsigned int width, const unsigned int height, const bool distort, const unsigned int distx, const unsigned int disty, const unsigned int smooth, const bool separate, const char *virtualpixel, const char *bgcolor) {
+    storeColorsXml();
+    putenv("MAGICK_CONFIGURE_PATH=/");
+    Arguments *args = newArguments(85);
+    appendArgument(args, "convert");
+    appendArgument(args, "-size");
+    char _size[64];
+    sprintf(_size, "%dx%d", width, height);
+    char _smooth[64];
+    sprintf(_smooth, "0x%d", smooth);
+    char _dist[64];
+    sprintf(_dist, "compose:args=-%d,-%d", distx, disty);
+    char _method[64];
+    if (distort) sprintf(_method, "%s", "distort");
+    else sprintf(_method, "%s", "displace");
+    appendArgument(args, _size);
+    appendArgument(args, "-depth");
+    appendArgument(args, "8");
+    appendArgument(args, (char *)SRC_FILE);
+    appendArgument(args, "-channel");
+    appendArgument(args, "rgb");
+
+    if (separate) {
+        appendArgument(args, "(");
+        appendArgument(args, "-clone");
+        appendArgument(args, "0");
+        appendArgument(args, "-define");
+        appendArgument(args, "convolve:scale=50%!");
+        appendArgument(args, "-bias");
+        appendArgument(args, "50%");
+        appendArgument(args, "-morphology");
+        appendArgument(args, "Convolve");
+        appendArgument(args, "Sobel");
+        appendArgument(args, "-blur");
+        appendArgument(args, _smooth);
+        appendArgument(args, "-channel");
+        appendArgument(args, "rgb");
+        appendArgument(args, "-auto-level");
+        appendArgument(args, ")");
+        appendArgument(args, "(");
+        appendArgument(args, "-clone");
+        appendArgument(args, "0");
+        appendArgument(args, "-clone");
+        appendArgument(args, "1");
+        appendArgument(args, "-channel");
+        appendArgument(args, "r");
+        appendArgument(args, "-separate");
+        appendArgument(args, "+channel");
+        appendArgument(args, "-virtual-pixel");
+        appendArgument(args, virtualpixel);
+        appendArgument(args, "-background");
+        appendArgument(args, bgcolor);
+        appendArgument(args, "-define");
+        appendArgument(args, _dist);
+        appendArgument(args, "-compose");
+        appendArgument(args, _method);
+        appendArgument(args, "-composite");
+        appendArgument(args, ")");
+        appendArgument(args, "(");
+        appendArgument(args, "-clone");
+        appendArgument(args, "0");
+        appendArgument(args, "-clone");
+        appendArgument(args, "1");
+        appendArgument(args, "-channel");
+        appendArgument(args, "g");
+        appendArgument(args, "-separate");
+        appendArgument(args, "+channel");
+        appendArgument(args, "-virtual-pixel");
+        appendArgument(args, virtualpixel);
+        appendArgument(args, "-background");
+        appendArgument(args, bgcolor);
+        appendArgument(args, "-define");
+        appendArgument(args, _dist);
+        appendArgument(args, "-compose");
+        appendArgument(args, _method);
+        appendArgument(args, "-composite");
+        appendArgument(args, ")");
+        appendArgument(args, "(");
+        appendArgument(args, "-clone");
+        appendArgument(args, "0");
+        appendArgument(args, "-clone");
+        appendArgument(args, "1");
+        appendArgument(args, "-channel");
+        appendArgument(args, "b");
+        appendArgument(args, "-separate");
+        appendArgument(args, "+channel");
+        appendArgument(args, "-virtual-pixel");
+        appendArgument(args, virtualpixel);
+        appendArgument(args, "-background");
+        appendArgument(args, bgcolor);
+        appendArgument(args, "-define");
+        appendArgument(args, _dist);
+        appendArgument(args, "-compose");
+        appendArgument(args, _method);
+        appendArgument(args, "-composite");
+        appendArgument(args, ")");
+        appendArgument(args, "-delete");
+        appendArgument(args, "0,1");
+        appendArgument(args, "-combine");
+    } else {
+        appendArgument(args, "(");
+        appendArgument(args, "-clone");
+        appendArgument(args, "0");
+        appendArgument(args, "-define");
+        appendArgument(args, "convolve:scale=50%!");
+        appendArgument(args, "-bias");
+        appendArgument(args, "50%");
+        appendArgument(args, "-morphology");
+        appendArgument(args, "Convolve");
+        appendArgument(args, "Sobel");
+        appendArgument(args, "-colorspace");
+        appendArgument(args, "gray");
+        appendArgument(args, "-blur");
+        appendArgument(args, _smooth);
+        appendArgument(args, "-auto-level");
+        appendArgument(args, ")");
+        appendArgument(args, "-virtual-pixel");
+        appendArgument(args, virtualpixel);
+        appendArgument(args, "-background");
+        appendArgument(args, bgcolor);
+        appendArgument(args, "-define");
+        appendArgument(args, _dist);
+        appendArgument(args, "-compose");
+        appendArgument(args, _method);
+        appendArgument(args, "-composite");
+    }
+    appendArgument(args, (char *)DST_FILE);
+    printArguments(args);
+    MagickWandGenesis();
+    ImageInfo *info = AcquireImageInfo();
+    ExceptionInfo *e = AcquireExceptionInfo();
+    MagickBooleanType cmdres = MagickCommandGenesis(info, ConvertImageCommand, args->argc, args->argv, NULL, e);
+    if (cmdres == MagickFalse) console_error("An error occured while executing command.", "");
+    if (e->severity != UndefinedException) {
+        console_error("Reason: ", e->reason);
+        console_error("Description: ", e->description);
+    }
+    info=DestroyImageInfo(info);
+    e=DestroyExceptionInfo(e);
+    MagickWandTerminus();
+    deleteArguments(args);
+}
 
 int main() {
     is_ready();
