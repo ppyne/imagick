@@ -2159,7 +2159,6 @@ void _IMTurbulence(const unsigned int width, const unsigned int height, const bo
         appendArgument(args, "-composite");
     }
     appendArgument(args, (char *)DST_FILE);
-    printArguments(args);
     MagickWandGenesis();
     ImageInfo *info = AcquireImageInfo();
     ExceptionInfo *e = AcquireExceptionInfo();
