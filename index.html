@@ -289,7 +289,7 @@
                 $('#src'),
                 parseInt($('#toWebPQuality').val()),
                 $('#toWebPLossless').is(':checked')?1:0,
-                parseInt($('#toWebPMathod').val())
+                parseInt($('#toWebPMethod').val())
             );
             $('#webped').attr('src', data.base64url);
             $('#webpsize').text(data.size);
