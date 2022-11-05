@@ -8,7 +8,8 @@ Try it here [ppyne.github.io/imagick](https://ppyne.github.io/imagick/).
 
 ## Requirements
 
-- ImageMagick Legacy version 6.9.12-62 (tar.gz present in the repo)
+- ImageMagick Legacy version 6.9.12-66 (tar.gz present in the repo)
+- libwebp 1.2.4 (optional, tar.gz present in the repo)
 - Emscripten SDK version 3.1.20
 - A Unix like environment (Mac or Linux is fine) with bash
 - Essential GNU building tools like make or pkg-config
