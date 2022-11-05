@@ -97,6 +97,24 @@ let _IMSetDestination = ($selector, width, height) => {
     $selector.attr('src', canvas.toDataURL('image/png'));
 };
 
+let _IMGetWEBPDestination = async () => {
+    if (!FS.analyzePath('dst.webp').exists) return;
+    let data = FS.readFile('dst.webp');
+    let blob = new Blob([data], {type: 'image/webp'});
+    FS.unlink('dst.webp');
+    const base64url = await new Promise((r) => {
+        const reader = new FileReader()
+        reader.onload = () => r(reader.result);
+        reader.readAsDataURL(blob);
+    });
+    return {
+        size: data.length,
+        base64url: base64url,
+        blob: blob,
+        data: data
+    };
+};
+
 let _IMLoadJson = () => {
     if (!FS.analyzePath('dst.json').exists) return false;
     let bytes = FS.readFile('dst.json');
@@ -347,6 +365,13 @@ let IMTurbulence = ($src, distort, distx, disty, smooth, separate, $dst, virtual
     _IMClearFS();
 };
 
+let IMToWebP = async ($src, quality /* 0 to 100 */, lossless, method = 4 /* 0 to 6 */) => {
+    const [ width, height ] = _IMSetSource($src);
+    if (width === false) return;
+    _IMToWebP(width, height, quality, lossless, method);
+    return await _IMGetWEBPDestination();
+};
+
 let _onIMReady = () => {
     _IMResize = Module.cwrap('_IMResize', null, ['number', 'number', 'number', 'number', 'number', 'number']);
     _IMCmdResize = Module.cwrap('_IMCmdResize', null, ['number', 'number', 'number', 'number', 'string']);
@@ -376,6 +401,7 @@ let _onIMReady = () => {
     _IMShadowHighlight = Module.cwrap('_IMShadowHighlight', null, ['number', 'number', 'number', 'number', 'number', 'number', 'number', 'number', 'number', 'number', 'number', 'number']);
     _IMUnsaturateHue = Module.cwrap('_IMUnsaturateHue', null, ['number', 'number', 'number', 'number', 'number', 'number', 'number']);
     _IMTurbulence = Module.cwrap('_IMTurbulence', null, ['number', 'number', 'number', 'number', 'number', 'number', 'number', 'string', 'string']);
+    _IMToWebP = Module.cwrap('_IMToWebP', null, ['number', 'number', 'number', 'number']);
 };
 
 $(window).on('IMReady', _onIMReady);

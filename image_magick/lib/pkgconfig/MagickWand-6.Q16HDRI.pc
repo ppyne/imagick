@@ -12,4 +12,4 @@ Version: 6.9.12
 Requires: MagickCore-6.Q16HDRI
 Cflags: -I${includearchdir} -I${includedir} -DMAGICKCORE_HDRI_ENABLE=1 -DMAGICKCORE_QUANTUM_DEPTH=16
 Libs: -L${libdir} -l${libname} 
-Libs.private: -L${libdir} -l${libname}                                        -lm       -lm
+Libs.private: -L${libdir} -l${libname}                   -L/opt/local/www/apache2/html/imagick/image_magick/lib -lwebpmux -lwebpdemux -lwebp -L/opt/local/www/apache2/html/imagick/image_magick/lib -lwebp                    -lm       -lm

@@ -2174,6 +2174,43 @@ void _IMTurbulence(const unsigned int width, const unsigned int height, const bo
     deleteArguments(args);
 }
 
+void _IMToWebP(const unsigned int width, const unsigned int height, const unsigned int quality, const bool lossless, const unsigned int method) {
+    Arguments *args = newArguments(13);
+    appendArgument(args, "convert");
+    appendArgument(args, "-size");
+    char _size[64];
+    sprintf(_size, "%dx%d", width, height);
+    appendArgument(args, _size);
+    appendArgument(args, "-depth");
+    appendArgument(args, "8");
+    appendArgument(args, (char *)SRC_FILE);
+    appendArgument(args, "-quality");
+    char _quality[64];
+    sprintf(_quality, "%d", quality);
+    appendArgument(args, _quality);
+    appendArgument(args, "-define");
+    if (lossless) appendArgument(args, "webp:lossless=true");
+    else appendArgument(args, "webp:lossless=false");
+    appendArgument(args, "-define");
+    char _method[64];
+    sprintf(_method, "webp:method=%d", method);
+    appendArgument(args, _method);
+    appendArgument(args, "dst.webp");
+    MagickWandGenesis();
+    ImageInfo *info = AcquireImageInfo();
+    ExceptionInfo *e = AcquireExceptionInfo();
+    MagickBooleanType cmdres = MagickCommandGenesis(info, ConvertImageCommand, args->argc, args->argv, NULL, e);
+    if (cmdres == MagickFalse) console_error("An error occured while executing command.", "");
+    if (e->severity != UndefinedException) {
+        console_error("Reason: ", e->reason);
+        console_error("Description: ", e->description);
+    }
+    info=DestroyImageInfo(info);
+    e=DestroyExceptionInfo(e);
+    MagickWandTerminus();
+    deleteArguments(args);
+}
+
 int main() {
     is_ready();
     return 0;

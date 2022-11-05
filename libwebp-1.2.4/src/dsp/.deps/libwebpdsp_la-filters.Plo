@@ -1,0 +1,58 @@
+libwebpdsp_la-filters.lo: filters.c ../../src/dsp/dsp.h \
+  ../../src/webp/config.h ../../src/dsp/cpu.h ../../src/webp/types.h \
+  /Users/avialle/dev/emsdk/upstream/lib/clang/16.0.0/include/stddef.h \
+  /Users/avialle/dev/emsdk/upstream/lib/clang/16.0.0/include/__stddef_max_align_t.h \
+  /Users/avialle/dev/emsdk/upstream/lib/clang/16.0.0/include/inttypes.h \
+  /Users/avialle/dev/emsdk/upstream/emscripten/cache/sysroot/include/inttypes.h \
+  /Users/avialle/dev/emsdk/upstream/emscripten/cache/sysroot/include/features.h \
+  /Users/avialle/dev/emsdk/upstream/lib/clang/16.0.0/include/stdint.h \
+  /Users/avialle/dev/emsdk/upstream/emscripten/cache/sysroot/include/stdint.h \
+  /Users/avialle/dev/emsdk/upstream/emscripten/cache/sysroot/include/bits/alltypes.h \
+  /Users/avialle/dev/emsdk/upstream/emscripten/cache/sysroot/include/bits/stdint.h \
+  /Users/avialle/dev/emsdk/upstream/emscripten/cache/sysroot/include/assert.h \
+  /Users/avialle/dev/emsdk/upstream/emscripten/cache/sysroot/include/compat/stdlib.h \
+  /Users/avialle/dev/emsdk/upstream/emscripten/cache/sysroot/include/stdlib.h \
+  /Users/avialle/dev/emsdk/upstream/emscripten/cache/sysroot/include/alloca.h \
+  /Users/avialle/dev/emsdk/upstream/emscripten/cache/sysroot/include/compat/string.h \
+  /Users/avialle/dev/emsdk/upstream/emscripten/cache/sysroot/include/string.h \
+  /Users/avialle/dev/emsdk/upstream/emscripten/cache/sysroot/include/strings.h
+
+../../src/dsp/dsp.h:
+
+../../src/webp/config.h:
+
+../../src/dsp/cpu.h:
+
+../../src/webp/types.h:
+
+/Users/avialle/dev/emsdk/upstream/lib/clang/16.0.0/include/stddef.h:
+
+/Users/avialle/dev/emsdk/upstream/lib/clang/16.0.0/include/__stddef_max_align_t.h:
+
+/Users/avialle/dev/emsdk/upstream/lib/clang/16.0.0/include/inttypes.h:
+
+/Users/avialle/dev/emsdk/upstream/emscripten/cache/sysroot/include/inttypes.h:
+
+/Users/avialle/dev/emsdk/upstream/emscripten/cache/sysroot/include/features.h:
+
+/Users/avialle/dev/emsdk/upstream/lib/clang/16.0.0/include/stdint.h:
+
+/Users/avialle/dev/emsdk/upstream/emscripten/cache/sysroot/include/stdint.h:
+
+/Users/avialle/dev/emsdk/upstream/emscripten/cache/sysroot/include/bits/alltypes.h:
+
+/Users/avialle/dev/emsdk/upstream/emscripten/cache/sysroot/include/bits/stdint.h:
+
+/Users/avialle/dev/emsdk/upstream/emscripten/cache/sysroot/include/assert.h:
+
+/Users/avialle/dev/emsdk/upstream/emscripten/cache/sysroot/include/compat/stdlib.h:
+
+/Users/avialle/dev/emsdk/upstream/emscripten/cache/sysroot/include/stdlib.h:
+
+/Users/avialle/dev/emsdk/upstream/emscripten/cache/sysroot/include/alloca.h:
+
+/Users/avialle/dev/emsdk/upstream/emscripten/cache/sysroot/include/compat/string.h:
+
+/Users/avialle/dev/emsdk/upstream/emscripten/cache/sysroot/include/string.h:
+
+/Users/avialle/dev/emsdk/upstream/emscripten/cache/sysroot/include/strings.h:

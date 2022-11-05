@@ -284,6 +284,18 @@
                 $('#turbulenced')
             );
         }
+        let onToWebPButton = async () => {
+            let data = await IMToWebP(
+                $('#src'),
+                parseInt($('#toWebPQuality').val()),
+                $('#toWebPLossless').is(':checked')?1:0,
+                parseInt($('#toWebPMathod').val())
+            );
+            $('#webped').attr('src', data.base64url);
+            $('#webpsize').text(data.size);
+            if (data.size > 1) $('#webpsizeplural').text('s');
+            else $('#webpsizeplural').text('');
+        }
         let onIMReady = () => {
             let $filters = $('#filters');
             const sortedFilters = [...IMEnumFilters].sort();
@@ -467,6 +479,13 @@
             $('#turbulenceSmooth').on('input', () => {
                 $('#turbulenceSmoothDisplay').text($('#turbulenceSmooth').val());
             });
+            $('#toWebPQuality').on('input', () => {
+                $('#toWebPQualityDisplay').text($('#toWebPQuality').val());
+            });
+            $('#toWebPMethod').on('input', () => {
+                $('#toWebPMethodDisplay').text($('#toWebPMethod').val());
+            });
+            $('#toWebPButton').on('click', onToWebPButton);
             $('#turbulenceButton').on('click', onTurbulenceButton);
             $('#unsaturateHueButton').on('click', onUnsaturateHueButton);
             $('#shadowHighlightButton').on('click', onShadowHighlightButton);
@@ -697,6 +716,14 @@
             <button id="turbulenceButton" type="button">Apply</button>
         </p>
         <p><img id="turbulenced" /></p>
+        <h2>Conversion to WEBP format</h2>
+        <p>
+            <label for="toWebPQuality">Quality</label> <input id="toWebPQuality" type="range" value="80" min="0" max="100" step="1" /> <span class="fixedWidth" id="toWebPQualityDisplay">80</span>,
+            <label for="toWebPLossless">Lossless</label> <input id="toWebPLossless" type="checkbox" />, 
+            <label for="toWebPMethod">Optimization</label> <input id="toWebPMethod" type="range" value="4" min="0" max="6" step="1" /> <span class="fixedWidth" id="toWebPMethodDisplay">4</span>, 
+            <button id="toWebPButton" type="button">Apply</button>
+        </p>
+        <p><img id="webped" /><br />Size: <span id="webpsize">0</span> byte<span id="webpsizeplural"></span></p>
     </main>
 </body>
 </html>

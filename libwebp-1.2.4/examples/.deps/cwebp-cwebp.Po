@@ -1,0 +1,106 @@
+cwebp-cwebp.o: cwebp.c \
+  /Users/avialle/dev/emsdk/upstream/emscripten/cache/sysroot/include/assert.h \
+  /Users/avialle/dev/emsdk/upstream/emscripten/cache/sysroot/include/features.h \
+  /Users/avialle/dev/emsdk/upstream/emscripten/cache/sysroot/include/stdio.h \
+  /Users/avialle/dev/emsdk/upstream/emscripten/cache/sysroot/include/wasi/api.h \
+  /Users/avialle/dev/emsdk/upstream/lib/clang/16.0.0/include/stddef.h \
+  /Users/avialle/dev/emsdk/upstream/lib/clang/16.0.0/include/__stddef_max_align_t.h \
+  /Users/avialle/dev/emsdk/upstream/lib/clang/16.0.0/include/stdint.h \
+  /Users/avialle/dev/emsdk/upstream/emscripten/cache/sysroot/include/stdint.h \
+  /Users/avialle/dev/emsdk/upstream/emscripten/cache/sysroot/include/bits/alltypes.h \
+  /Users/avialle/dev/emsdk/upstream/emscripten/cache/sysroot/include/bits/stdint.h \
+  /Users/avialle/dev/emsdk/upstream/emscripten/cache/sysroot/include/compat/stdlib.h \
+  /Users/avialle/dev/emsdk/upstream/emscripten/cache/sysroot/include/stdlib.h \
+  /Users/avialle/dev/emsdk/upstream/emscripten/cache/sysroot/include/alloca.h \
+  /Users/avialle/dev/emsdk/upstream/emscripten/cache/sysroot/include/compat/string.h \
+  /Users/avialle/dev/emsdk/upstream/emscripten/cache/sysroot/include/string.h \
+  /Users/avialle/dev/emsdk/upstream/emscripten/cache/sysroot/include/strings.h \
+  ../src/webp/config.h ../examples/example_util.h ../src/webp/types.h \
+  /Users/avialle/dev/emsdk/upstream/lib/clang/16.0.0/include/inttypes.h \
+  /Users/avialle/dev/emsdk/upstream/emscripten/cache/sysroot/include/inttypes.h \
+  ../src/webp/mux_types.h ../src/webp/./types.h ../imageio/image_dec.h \
+  ../imageio/./metadata.h ../imageio/./jpegdec.h ../imageio/./pngdec.h \
+  ../imageio/./pnmdec.h ../imageio/./tiffdec.h ../imageio/./webpdec.h \
+  ../src/webp/decode.h ../imageio/./wicdec.h ../imageio/imageio_util.h \
+  ../imageio/webpdec.h stopwatch.h \
+  /Users/avialle/dev/emsdk/upstream/emscripten/cache/sysroot/include/sys/time.h \
+  /Users/avialle/dev/emsdk/upstream/emscripten/cache/sysroot/include/sys/select.h \
+  unicode.h ../src/webp/encode.h
+
+/Users/avialle/dev/emsdk/upstream/emscripten/cache/sysroot/include/assert.h:
+
+/Users/avialle/dev/emsdk/upstream/emscripten/cache/sysroot/include/features.h:
+
+/Users/avialle/dev/emsdk/upstream/emscripten/cache/sysroot/include/stdio.h:
+
+/Users/avialle/dev/emsdk/upstream/emscripten/cache/sysroot/include/wasi/api.h:
+
+/Users/avialle/dev/emsdk/upstream/lib/clang/16.0.0/include/stddef.h:
+
+/Users/avialle/dev/emsdk/upstream/lib/clang/16.0.0/include/__stddef_max_align_t.h:
+
+/Users/avialle/dev/emsdk/upstream/lib/clang/16.0.0/include/stdint.h:
+
+/Users/avialle/dev/emsdk/upstream/emscripten/cache/sysroot/include/stdint.h:
+
+/Users/avialle/dev/emsdk/upstream/emscripten/cache/sysroot/include/bits/alltypes.h:
+
+/Users/avialle/dev/emsdk/upstream/emscripten/cache/sysroot/include/bits/stdint.h:
+
+/Users/avialle/dev/emsdk/upstream/emscripten/cache/sysroot/include/compat/stdlib.h:
+
+/Users/avialle/dev/emsdk/upstream/emscripten/cache/sysroot/include/stdlib.h:
+
+/Users/avialle/dev/emsdk/upstream/emscripten/cache/sysroot/include/alloca.h:
+
+/Users/avialle/dev/emsdk/upstream/emscripten/cache/sysroot/include/compat/string.h:
+
+/Users/avialle/dev/emsdk/upstream/emscripten/cache/sysroot/include/string.h:
+
+/Users/avialle/dev/emsdk/upstream/emscripten/cache/sysroot/include/strings.h:
+
+../src/webp/config.h:
+
+../examples/example_util.h:
+
+../src/webp/types.h:
+
+/Users/avialle/dev/emsdk/upstream/lib/clang/16.0.0/include/inttypes.h:
+
+/Users/avialle/dev/emsdk/upstream/emscripten/cache/sysroot/include/inttypes.h:
+
+../src/webp/mux_types.h:
+
+../src/webp/./types.h:
+
+../imageio/image_dec.h:
+
+../imageio/./metadata.h:
+
+../imageio/./jpegdec.h:
+
+../imageio/./pngdec.h:
+
+../imageio/./pnmdec.h:
+
+../imageio/./tiffdec.h:
+
+../imageio/./webpdec.h:
+
+../src/webp/decode.h:
+
+../imageio/./wicdec.h:
+
+../imageio/imageio_util.h:
+
+../imageio/webpdec.h:
+
+stopwatch.h:
+
+/Users/avialle/dev/emsdk/upstream/emscripten/cache/sysroot/include/sys/time.h:
+
+/Users/avialle/dev/emsdk/upstream/emscripten/cache/sysroot/include/sys/select.h:
+
+unicode.h:
+
+../src/webp/encode.h:

@@ -1,0 +1,54 @@
+libimagedec_la-image_dec.lo: image_dec.c image_dec.h ../src/webp/types.h \
+  /Users/avialle/dev/emsdk/upstream/lib/clang/16.0.0/include/stddef.h \
+  /Users/avialle/dev/emsdk/upstream/lib/clang/16.0.0/include/__stddef_max_align_t.h \
+  /Users/avialle/dev/emsdk/upstream/lib/clang/16.0.0/include/inttypes.h \
+  /Users/avialle/dev/emsdk/upstream/emscripten/cache/sysroot/include/inttypes.h \
+  /Users/avialle/dev/emsdk/upstream/emscripten/cache/sysroot/include/features.h \
+  /Users/avialle/dev/emsdk/upstream/lib/clang/16.0.0/include/stdint.h \
+  /Users/avialle/dev/emsdk/upstream/emscripten/cache/sysroot/include/stdint.h \
+  /Users/avialle/dev/emsdk/upstream/emscripten/cache/sysroot/include/bits/alltypes.h \
+  /Users/avialle/dev/emsdk/upstream/emscripten/cache/sysroot/include/bits/stdint.h \
+  ../src/webp/config.h metadata.h jpegdec.h pngdec.h pnmdec.h tiffdec.h \
+  webpdec.h ../src/webp/decode.h ../src/webp/./types.h wicdec.h
+
+image_dec.h:
+
+../src/webp/types.h:
+
+/Users/avialle/dev/emsdk/upstream/lib/clang/16.0.0/include/stddef.h:
+
+/Users/avialle/dev/emsdk/upstream/lib/clang/16.0.0/include/__stddef_max_align_t.h:
+
+/Users/avialle/dev/emsdk/upstream/lib/clang/16.0.0/include/inttypes.h:
+
+/Users/avialle/dev/emsdk/upstream/emscripten/cache/sysroot/include/inttypes.h:
+
+/Users/avialle/dev/emsdk/upstream/emscripten/cache/sysroot/include/features.h:
+
+/Users/avialle/dev/emsdk/upstream/lib/clang/16.0.0/include/stdint.h:
+
+/Users/avialle/dev/emsdk/upstream/emscripten/cache/sysroot/include/stdint.h:
+
+/Users/avialle/dev/emsdk/upstream/emscripten/cache/sysroot/include/bits/alltypes.h:
+
+/Users/avialle/dev/emsdk/upstream/emscripten/cache/sysroot/include/bits/stdint.h:
+
+../src/webp/config.h:
+
+metadata.h:
+
+jpegdec.h:
+
+pngdec.h:
+
+pnmdec.h:
+
+tiffdec.h:
+
+webpdec.h:
+
+../src/webp/decode.h:
+
+../src/webp/./types.h:
+
+wicdec.h:

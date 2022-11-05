@@ -1,0 +1,118 @@
+libwebpencode_la-picture_csp_enc.lo: picture_csp_enc.c \
+  /Users/avialle/dev/emsdk/upstream/emscripten/cache/sysroot/include/assert.h \
+  /Users/avialle/dev/emsdk/upstream/emscripten/cache/sysroot/include/features.h \
+  /Users/avialle/dev/emsdk/upstream/emscripten/cache/sysroot/include/compat/stdlib.h \
+  /Users/avialle/dev/emsdk/upstream/emscripten/cache/sysroot/include/stdlib.h \
+  /Users/avialle/dev/emsdk/upstream/emscripten/cache/sysroot/include/bits/alltypes.h \
+  /Users/avialle/dev/emsdk/upstream/emscripten/cache/sysroot/include/alloca.h \
+  /Users/avialle/dev/emsdk/upstream/emscripten/cache/sysroot/include/compat/math.h \
+  /Users/avialle/dev/emsdk/upstream/emscripten/cache/sysroot/include/math.h \
+  ../../sharpyuv/sharpyuv.h \
+  /Users/avialle/dev/emsdk/upstream/lib/clang/16.0.0/include/inttypes.h \
+  /Users/avialle/dev/emsdk/upstream/emscripten/cache/sysroot/include/inttypes.h \
+  /Users/avialle/dev/emsdk/upstream/lib/clang/16.0.0/include/stdint.h \
+  /Users/avialle/dev/emsdk/upstream/emscripten/cache/sysroot/include/stdint.h \
+  /Users/avialle/dev/emsdk/upstream/emscripten/cache/sysroot/include/bits/stdint.h \
+  ../../sharpyuv/sharpyuv_csp.h ../../src/enc/vp8i_enc.h \
+  /Users/avialle/dev/emsdk/upstream/emscripten/cache/sysroot/include/compat/string.h \
+  /Users/avialle/dev/emsdk/upstream/emscripten/cache/sysroot/include/string.h \
+  /Users/avialle/dev/emsdk/upstream/emscripten/cache/sysroot/include/strings.h \
+  ../../src/dec/common_dec.h ../../src/dsp/dsp.h ../../src/webp/config.h \
+  ../../src/dsp/cpu.h ../../src/webp/types.h \
+  /Users/avialle/dev/emsdk/upstream/lib/clang/16.0.0/include/stddef.h \
+  /Users/avialle/dev/emsdk/upstream/lib/clang/16.0.0/include/__stddef_max_align_t.h \
+  ../../src/utils/bit_writer_utils.h ../../src/utils/thread_utils.h \
+  ../../src/utils/utils.h \
+  /Users/avialle/dev/emsdk/upstream/lib/clang/16.0.0/include/limits.h \
+  /Users/avialle/dev/emsdk/upstream/emscripten/cache/sysroot/include/limits.h \
+  /Users/avialle/dev/emsdk/upstream/emscripten/cache/sysroot/include/bits/limits.h \
+  ../../src/webp/encode.h ../../src/webp/./types.h \
+  ../../src/utils/random_utils.h ../../src/dsp/lossless.h \
+  ../../src/webp/decode.h ../../src/enc/histogram_enc.h \
+  ../../src/enc/backward_references_enc.h \
+  ../../src/webp/format_constants.h ../../src/dsp/yuv.h \
+  ../../src/dec/vp8_dec.h
+
+/Users/avialle/dev/emsdk/upstream/emscripten/cache/sysroot/include/assert.h:
+
+/Users/avialle/dev/emsdk/upstream/emscripten/cache/sysroot/include/features.h:
+
+/Users/avialle/dev/emsdk/upstream/emscripten/cache/sysroot/include/compat/stdlib.h:
+
+/Users/avialle/dev/emsdk/upstream/emscripten/cache/sysroot/include/stdlib.h:
+
+/Users/avialle/dev/emsdk/upstream/emscripten/cache/sysroot/include/bits/alltypes.h:
+
+/Users/avialle/dev/emsdk/upstream/emscripten/cache/sysroot/include/alloca.h:
+
+/Users/avialle/dev/emsdk/upstream/emscripten/cache/sysroot/include/compat/math.h:
+
+/Users/avialle/dev/emsdk/upstream/emscripten/cache/sysroot/include/math.h:
+
+../../sharpyuv/sharpyuv.h:
+
+/Users/avialle/dev/emsdk/upstream/lib/clang/16.0.0/include/inttypes.h:
+
+/Users/avialle/dev/emsdk/upstream/emscripten/cache/sysroot/include/inttypes.h:
+
+/Users/avialle/dev/emsdk/upstream/lib/clang/16.0.0/include/stdint.h:
+
+/Users/avialle/dev/emsdk/upstream/emscripten/cache/sysroot/include/stdint.h:
+
+/Users/avialle/dev/emsdk/upstream/emscripten/cache/sysroot/include/bits/stdint.h:
+
+../../sharpyuv/sharpyuv_csp.h:
+
+../../src/enc/vp8i_enc.h:
+
+/Users/avialle/dev/emsdk/upstream/emscripten/cache/sysroot/include/compat/string.h:
+
+/Users/avialle/dev/emsdk/upstream/emscripten/cache/sysroot/include/string.h:
+
+/Users/avialle/dev/emsdk/upstream/emscripten/cache/sysroot/include/strings.h:
+
+../../src/dec/common_dec.h:
+
+../../src/dsp/dsp.h:
+
+../../src/webp/config.h:
+
+../../src/dsp/cpu.h:
+
+../../src/webp/types.h:
+
+/Users/avialle/dev/emsdk/upstream/lib/clang/16.0.0/include/stddef.h:
+
+/Users/avialle/dev/emsdk/upstream/lib/clang/16.0.0/include/__stddef_max_align_t.h:
+
+../../src/utils/bit_writer_utils.h:
+
+../../src/utils/thread_utils.h:
+
+../../src/utils/utils.h:
+
+/Users/avialle/dev/emsdk/upstream/lib/clang/16.0.0/include/limits.h:
+
+/Users/avialle/dev/emsdk/upstream/emscripten/cache/sysroot/include/limits.h:
+
+/Users/avialle/dev/emsdk/upstream/emscripten/cache/sysroot/include/bits/limits.h:
+
+../../src/webp/encode.h:
+
+../../src/webp/./types.h:
+
+../../src/utils/random_utils.h:
+
+../../src/dsp/lossless.h:
+
+../../src/webp/decode.h:
+
+../../src/enc/histogram_enc.h:
+
+../../src/enc/backward_references_enc.h:
+
+../../src/webp/format_constants.h:
+
+../../src/dsp/yuv.h:
+
+../../src/dec/vp8_dec.h:

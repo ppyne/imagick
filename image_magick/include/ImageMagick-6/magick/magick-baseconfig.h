@@ -1441,10 +1441,14 @@
 
 
 /* Define if you have WEBPMUX library */
-/* #undef WEBPMUX_DELEGATE */
+#ifndef MAGICKCORE_WEBPMUX_DELEGATE
+#define MAGICKCORE_WEBPMUX_DELEGATE 1
+#endif
 
 /* Define if you have WEBP library */
-/* #undef WEBP_DELEGATE */
+#ifndef MAGICKCORE_WEBP_DELEGATE
+#define MAGICKCORE_WEBP_DELEGATE 1
+#endif
 
 /* Define to use the Windows GDI32 library */
 /* #undef WINGDI32_DELEGATE */
