@@ -17,7 +17,7 @@ old_library='libMagickWand-6.Q16HDRI.a'
 inherited_linker_flags=' '
 
 # Libraries that this one depends upon.
-dependency_libs=' -L/opt/local/www/apache2/html/imagick/image_magick/lib /opt/local/www/apache2/html/imagick/image_magick/lib/libMagickCore-6.Q16HDRI.la /opt/local/www/apache2/html/imagick/image_magick/lib/libjpeg.la /opt/local/www/apache2/html/imagick/image_magick/lib/libpng16.la /opt/local/www/apache2/html/imagick/image_magick/lib/libfftw3.la /opt/local/www/apache2/html/imagick/image_magick/lib/libwebpmux.la /opt/local/www/apache2/html/imagick/image_magick/lib/libwebpdemux.la /opt/local/www/apache2/html/imagick/image_magick/lib/libwebp.la -lopenjp2 -lz -lm'
+dependency_libs=' -L/opt/local/www/apache2/html/imagick/image_magick/lib /opt/local/www/apache2/html/imagick/image_magick/lib/libMagickCore-6.Q16HDRI.la -L/opt/local/www/apache2/html/imagick/image_magick/usr/local/lib /opt/local/www/apache2/html/imagick/image_magick/lib/libjpeg.la /opt/local/www/apache2/html/imagick/image_magick/lib/libpng16.la /opt/local/www/apache2/html/imagick/image_magick/lib/libfftw3.la /opt/local/www/apache2/html/imagick/image_magick/lib/libheif.la -laom /opt/local/www/apache2/html/imagick/image_magick/lib/libde265.la -lx265 -ldav1d -lpthread /opt/local/www/apache2/html/imagick/image_magick/lib/libwebpmux.la /opt/local/www/apache2/html/imagick/image_magick/lib/libwebpdemux.la /opt/local/www/apache2/html/imagick/image_magick/lib/libwebp.la -lopenjp2 -lz -lm'
 
 # Names of additional weak libraries provided by this library
 weak_library_names=''

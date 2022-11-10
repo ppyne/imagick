@@ -1,0 +1,9 @@
+prefix=/usr/local
+includedir=${prefix}/include
+libdir=${prefix}/lib
+
+Name: libdav1d
+Description: AV1 decoding library
+Version: 0.7.1
+Libs: -L${libdir} -ldav1d -s USE_PTHREADS=1 -s PTHREAD_POOL_SIZE=4
+Cflags: -I${includedir} -s USE_PTHREADS=1

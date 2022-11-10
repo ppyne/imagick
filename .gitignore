@@ -6,6 +6,11 @@ openjpeg-2.5.0
 jpeg-8c
 libpng-1.6.37
 zlib-1.2.12
+libheif-1.13.0
+aom-1.0.0
+dav1d-0.7.1
+x265_3.4
+libde265-1.0.9
 kernpresets2
 kernpresets3
 args

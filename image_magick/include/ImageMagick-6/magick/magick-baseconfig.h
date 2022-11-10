@@ -1090,7 +1090,9 @@
 #endif
 
 /* Define if you have libheif library */
-/* #undef HEIC_DELEGATE */
+#ifndef MAGICKCORE_HEIC_DELEGATE
+#define MAGICKCORE_HEIC_DELEGATE 1
+#endif
 
 /* Directory where ImageMagick architecture headers live. */
 #ifndef MAGICKCORE_INCLUDEARCH_PATH

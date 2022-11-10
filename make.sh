@@ -8,6 +8,11 @@ BUILD_LIBPNG=1
 BUILD_JPEG=1
 BUILD_OPENJPEG=1
 BUILD_FFTW=1
+BUILD_AOM=1
+BUILD_DAV1D=1
+BUILD_X265=1
+BUILD_DE265=1
+BUILD_HEIC=1
 BUILD_IMAGE_MAGICK=1
 BUILD_IMAGICK=0
 
@@ -93,6 +98,70 @@ if [ $BUILD_FFTW -eq 1 ]; then
 	cd ..
 fi
 
+if [ $BUILD_AOM -eq 1 ]; then
+	if ! [ -d "aom-1.0.0" ]; then
+		tar xvfz aom-1.0.0.tar.gz
+	fi
+	cd aom-1.0.0/build
+    if ! [ -d "emscripten" ]; then mkdir emscripten; else rm -rf emscripten; mkdir emscripten; fi
+    cd emscripten
+	emcmake cmake -DCMAKE_INSTALL_PREFIX:PATH=$DESTINATION -DENABLE_SHARED=OFF -DENABLE_STATIC=ON -DBUILD_SHARED_LIBS=OFF -DENABLE_MMX=OFF -DENABLE_SSE=OFF -DENABLE_SSE2=OFF -DENABLE_SSE3=OFF -DENABLE_SSSE3=OFF -DENABLE_SSE4_1=OFF -DENABLE_SSE4_2=OFF -DENABLE_AVX=OFF -DENABLE_AVX2=OFF -DAOM_TARGET_CPU=generic -DENABLE_TESTS=OFF ../..
+	emmake make
+	emmake make install
+	cd ../../..
+fi
+
+if [ $BUILD_DAV1D -eq 1 ]; then
+	if ! [ -d "dav1d-0.7.1" ]; then
+		tar xvfz dav1d-0.7.1.tar.gz
+	fi
+	cd dav1d-0.7.1
+    if ! [ -d "build" ]; then mkdir build; else rm -rf build; mkdir build; fi
+    meson setup build -Denable_tools=false -Denable_tests=false --default-library static --cross-file ../wasm.ini
+    cd build
+    meson compile --verbose
+    cd ..
+    DESTDIR="${DESTINATION}" meson install -C build
+    # Desperate times require desperate measures...
+    cp "../dav1d.pc" "${DESTINATION}/lib/pkgconfig/dav1d.pc"
+    cd ..
+fi
+
+if [ $BUILD_X265 -eq 1 ]; then
+	if ! [ -d "x265_3.4" ]; then
+		tar xvfz x265_3.4.tar.gz
+	fi
+	cd x265_3.4/build
+    if ! [ -d "emscripten" ]; then mkdir emscripten; else rm -rf emscripten; mkdir emscripten; fi
+    cd emscripten
+	emcmake cmake -DCMAKE_INSTALL_PREFIX:PATH=$DESTINATION -DENABLE_SHARED=OFF -DENABLE_STATIC=ON -DENABLE_CLI=OFF ../../source
+	emmake make
+	emmake make install
+	cd ../../..
+fi
+
+if [ $BUILD_DE265 -eq 1 ]; then
+	if ! [ -d "libde265-1.0.9" ]; then
+		tar xvfz libde265-1.0.9.tar.gz
+	fi
+	cd libde265-1.0.9
+    emconfigure ./configure --build=x86_64-pc-linux-gnu --disable-sse --disable-dec265 --disable-sherlock265 --prefix="$DESTINATION" --exec-prefix="$DESTINATION" --disable-shared --enable-static
+	emmake make
+	emmake make install
+	cd ..
+fi
+
+if [ $BUILD_HEIC -eq 1 ]; then
+	if ! [ -d "libheif-1.13.0" ]; then
+		tar xvfz libheif-1.13.0.tar.gz
+	fi
+	cd libheif-1.13.0
+	emconfigure ./configure --build=x86_64-pc-linux-gnu --prefix="$DESTINATION" --exec-prefix="$DESTINATION" --disable-shared --enable-static --disable-multithreading --disable-go --disable-examples --disable-tests PKG_CONFIG_PATH="${DESTINATION}/lib/pkgconfig/" LDFLAGS="--bind"
+	emmake make
+	emmake make install
+	cd ..
+fi
+
 if [ $BUILD_IMAGE_MAGICK -eq 1 ]; then
 
     #rm -rf "${IMAGE_MAGICK}"
@@ -112,6 +181,7 @@ if [ $BUILD_IMAGE_MAGICK -eq 1 ]; then
         --with-jpeg \
         --with-openjp2 \
         --with-webp \
+        --with-heic \
         --with-fftw \
         --enable-static \
         --disable-shared \
@@ -139,7 +209,6 @@ if [ $BUILD_IMAGE_MAGICK -eq 1 ]; then
         --without-raqm \
         --without-gslib \
         --without-gvc \
-        --without-heic \
         --without-lqr \
         --without-openexr \
         --without-pango \
@@ -148,7 +217,8 @@ if [ $BUILD_IMAGE_MAGICK -eq 1 ]; then
         --without-xml \
         --without-zstd \
         --prefix="${DESTINATION}" \
-        --exec-prefix="${DESTINATION}"
+        --exec-prefix="${DESTINATION}" \
+        LDFLAGS="-L${DESTINATION}/lib -sASSERTIONS=1 -sALLOW_MEMORY_GROWTH=1 --bind"
 
     emmake make
     emmake make install

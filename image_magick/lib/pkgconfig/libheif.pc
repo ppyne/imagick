@@ -1,0 +1,18 @@
+prefix=/opt/local/www/apache2/html/imagick/image_magick
+exec_prefix=/opt/local/www/apache2/html/imagick/image_magick
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+builtin_h265_decoder=yes
+builtin_h265_encoder=yes
+builtin_avif_decoder=yes
+builtin_avif_encoder=yes
+
+Name: libheif
+Description: HEIF image codec.
+URL: https://github.com/strukturag/libheif
+Version: 1.13.0
+Requires:
+Requires.private:  aom libde265 x265 dav1d
+Libs: -L${exec_prefix}/lib -lheif
+Libs.private: -lpthread  -lstdc++
+Cflags: -I${prefix}/include

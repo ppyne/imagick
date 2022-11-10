@@ -1,0 +1,14 @@
+# libaom pkg-config.
+prefix=/opt/local/www/apache2/html/imagick/image_magick
+exec_prefix=${prefix}/bin
+libdir=${prefix}/lib
+includedir=${prefix}/include
+
+Name: aom
+Description: AV1 codec library v0.1.0.
+Version: 0.1.0
+Requires:
+Conflicts:
+Libs: -L${prefix}/lib -laom -lm -lpthread
+Libs.private: -lm -lpthread
+Cflags: -I${prefix}/include

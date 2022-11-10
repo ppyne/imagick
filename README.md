@@ -14,10 +14,11 @@ Try it here [ppyne.github.io/imagick](https://ppyne.github.io/imagick/).
 - openjpeg 2.5.0 (optional, tar.gz present in the repo)
 - zlib 1.2.12 (optional, tar.gz present in the repo)
 - libpng 1.6.37 (optional, tar.gz present in the repo)
+- for avif and heic support libheif 1.13.0, aom 1.0.0, dav1d 0.7.1, x265 3.4, libde265 1.0.9 (all this is optional, tar.gz archives are present in the repo)
 - FFTW 3.3.10 (optional, tar.gz present in the repo)
 - Emscripten SDK version 3.1.20
 - A Unix like environment (Mac or Linux is fine) with bash
-- Essential GNU building tools like make or pkg-config
+- Essential GNU building tools like make, cmake, meson, ninja, gcc and pkg-config (and many more...)
 - A web server like Apache2
 
 ## How to build
@@ -36,7 +37,7 @@ And enjoy.
 
 ## Notes
 
-For conversions, we link ImageMagick against libwepb for full webp support, zlib and libpng for full png support, libjpeg for full jpeg support and openjpeg for full jpeg2000 support.Also it is possible to convert formats like PNG, WEBP or JPEG with JS directly, thanks to the native browser support (See below for an explanation).
+For conversions, we link ImageMagick against libwepb for full webp support, zlib and libpng for full png support, libjpeg for full jpeg support, openjpeg for full jpeg2000 support and libheif to support avif files. Also it is possible to convert formats like PNG, WEBP or JPEG with JS directly, thanks to the native browser support (See below for an explanation).
 
 Fast Fourier transform is now supported.
 
@@ -82,7 +83,7 @@ Delegate library configuration:
   FreeType          --with-freetype=no          no
   Ghostscript lib   --with-gslib=no             no
   Graphviz          --with-gvc=no
-  HEIC              --with-heic=no              no
+  HEIC              --with-heic=yes             yes
   JBIG              --with-jbig=no              no
   JPEG v1           --with-jpeg=yes             yes
   JPEG XL           --with-jxl=no               no
@@ -107,6 +108,16 @@ Delegate library configuration:
   ZLIB              --with-zlib=yes             yes
   ZSTD              --with-zstd=no              no
 ```
+
+`wasm-ld` is warning us about a function in the x265 library :
+
+```
+wasm-ld: warning: function signature mismatch: x265_cpu_xgetbv
+>>> defined as (i32) -> i64 in /opt/local/www/apache2/html/imagick/image_magick/lib/libx265.a(cpu.cpp.o)
+>>> defined as (i32, i32, i32) -> void in /opt/local/www/apache2/html/imagick/image_magick/lib/libx265.a(primitives.cpp.o)
+```
+
+It doesn't seem to affect anything about the AVIF format, but may affect HEIC, we haven't done any test yet. Let me know if you found something.
 
 ### Native browser image format conversion
 
