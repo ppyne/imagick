@@ -2211,6 +2211,81 @@ void _IMToWebP(const unsigned int width, const unsigned int height, const unsign
     deleteArguments(args);
 }
 
+void _IMToJp2(const unsigned int width, const unsigned int height, const unsigned int quality) {
+    Arguments *args = newArguments(13);
+    appendArgument(args, "convert");
+    appendArgument(args, "-size");
+    char _size[64];
+    sprintf(_size, "%dx%d", width, height);
+    appendArgument(args, _size);
+    appendArgument(args, "-depth");
+    appendArgument(args, "8");
+    appendArgument(args, (char *)SRC_FILE);
+    appendArgument(args, "-quality");
+    char _quality[64];
+    sprintf(_quality, "%d", quality);
+    appendArgument(args, _quality);
+    appendArgument(args, "dst.jp2");
+    MagickWandGenesis();
+    ImageInfo *info = AcquireImageInfo();
+    ExceptionInfo *e = AcquireExceptionInfo();
+    MagickBooleanType cmdres = MagickCommandGenesis(info, ConvertImageCommand, args->argc, args->argv, NULL, e);
+    if (cmdres == MagickFalse) console_error("An error occured while executing command.", "");
+    if (e->severity != UndefinedException) {
+        console_error("Reason: ", e->reason);
+        console_error("Description: ", e->description);
+    }
+    info=DestroyImageInfo(info);
+    e=DestroyExceptionInfo(e);
+    MagickWandTerminus();
+    deleteArguments(args);
+}
+
+void _IMListFormats() {
+    FILE *fp;
+    fp = freopen("dst.txt", "w+", stdout);
+    Arguments *args = newArguments(3);
+    appendArgument(args, "convert");
+    appendArgument(args, "-list");
+    appendArgument(args, "format");
+    MagickWandGenesis();
+    ImageInfo *info = AcquireImageInfo();
+    ExceptionInfo *e = AcquireExceptionInfo();
+    MagickBooleanType cmdres = MagickCommandGenesis(info, ConvertImageCommand, args->argc, args->argv, NULL, e);
+    if (cmdres == MagickFalse) console_error("An error occured while executing command.", "");
+    if (e->severity != UndefinedException) {
+        console_error("Reason: ", e->reason);
+        console_error("Description: ", e->description);
+    }
+    info=DestroyImageInfo(info);
+    e=DestroyExceptionInfo(e);
+    MagickWandTerminus();
+    deleteArguments(args);
+    fclose(fp);
+}
+
+void _IMVersion() {
+    FILE *fp;
+    fp = freopen("dst.txt", "w+", stdout);
+    Arguments *args = newArguments(2);
+    appendArgument(args, "convert");
+    appendArgument(args, "-version");
+    MagickWandGenesis();
+    ImageInfo *info = AcquireImageInfo();
+    ExceptionInfo *e = AcquireExceptionInfo();
+    MagickBooleanType cmdres = MagickCommandGenesis(info, ConvertImageCommand, args->argc, args->argv, NULL, e);
+    if (cmdres == MagickFalse) console_error("An error occured while executing command.", "");
+    if (e->severity != UndefinedException) {
+        console_error("Reason: ", e->reason);
+        console_error("Description: ", e->description);
+    }
+    info=DestroyImageInfo(info);
+    e=DestroyExceptionInfo(e);
+    MagickWandTerminus();
+    deleteArguments(args);
+    fclose(fp);
+}
+
 int main() {
     is_ready();
     return 0;

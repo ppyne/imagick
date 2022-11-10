@@ -97,11 +97,14 @@ let _IMSetDestination = ($selector, width, height) => {
     $selector.attr('src', canvas.toDataURL('image/png'));
 };
 
-let _IMGetWEBPDestination = async () => {
-    if (!FS.analyzePath('dst.webp').exists) return;
-    let data = FS.readFile('dst.webp');
-    let blob = new Blob([data], {type: 'image/webp'});
-    FS.unlink('dst.webp');
+let _IMGetSpecificDestination = async (type, mimetype) => {
+    let filename = 'dst.' + type;
+    let mime = 'image/' + type;
+    if (mimetype !== undefined) mime = mimetype;
+    if (!FS.analyzePath(filename).exists) return;
+    let data = FS.readFile(filename);
+    let blob = new Blob([data], {type: mime});
+    FS.unlink(filename);
     const base64url = await new Promise((r) => {
         const reader = new FileReader()
         reader.onload = () => r(reader.result);
@@ -113,13 +116,20 @@ let _IMGetWEBPDestination = async () => {
         blob: blob,
         data: data
     };
-};
+}
 
 let _IMLoadJson = () => {
     if (!FS.analyzePath('dst.json').exists) return false;
     let bytes = FS.readFile('dst.json');
     let string = new TextDecoder().decode(bytes);
     return JSON.parse(string);
+};
+
+let _IMLoadText = () => {
+    if (!FS.analyzePath('dst.txt').exists) return false;
+    let bytes = FS.readFile('dst.txt');
+    FS.unlink('dst.txt');
+    return new TextDecoder().decode(bytes);
 };
 
 let _IMClearFS = () => {
@@ -369,8 +379,96 @@ let IMToWebP = async ($src, quality /* 0 to 100 */, lossless, method = 4 /* 0 to
     const [ width, height ] = _IMSetSource($src);
     if (width === false) return;
     _IMToWebP(width, height, quality, lossless, method);
-    return await _IMGetWEBPDestination();
+    _IMClearFS();
+    return await _IMGetSpecificDestination('webp');
 };
+
+let IMToAviF = async ($src) => {
+    const [ width, height ] = _IMSetSource($src);
+    if (width === false) return;
+    _IMToAviF(width, height);
+    _IMClearFS();
+    return await _IMGetSpecificDestination('avif');
+};
+
+let IMToBmp = async ($src) => {
+    const [ width, height ] = _IMSetSource($src);
+    if (width === false) return;
+    _IMToBmp(width, height);
+    _IMClearFS();
+    return await _IMGetSpecificDestination('bmp');
+};
+
+let IMToJp2 = async ($src, quality /* 0 to 100 */) => {
+    const [ width, height ] = _IMSetSource($src);
+    if (width === false) return;
+    _IMToJp2(width, height, quality);
+    _IMClearFS();
+    return await _IMGetSpecificDestination('jp2');
+};
+
+let IMListFormats = () => {
+    _IMListFormats();
+    let text = _IMLoadText();
+    let list = text.split("\n");
+    let formats = [];
+    let i = 0;
+    let re = /^\s*([A-Za-z0-9*-]+)\s+([rw+-]{3})\s+(.*)/;
+    for (const elt of list) {
+        if (i > 1) {
+            if (elt.length > 18) {
+                if (re.test(elt)) {
+                    let parts = elt.match(re);
+                    if (parts.length === 4) {
+                        let format = parts[1];
+                        let nativeBlob = false;
+                        if (format.endsWith("*")) {
+                            nativeBlob = true;
+                            format = format.slice(0, -1);
+                        }
+                        let mode = parts[2].split('');
+                        let read = false;
+                        let write = false;
+                        let multipleImages = false;
+                        if (mode.includes('r')) read = true;
+                        if (mode.includes('w')) write = true;
+                        if (mode.includes('+')) multipleImages = true;
+                        let description = parts[3];
+                        formats.push({
+                            name: format,
+                            nativeBlob: nativeBlob,
+                            read: read,
+                            write: write,
+                            multipleImages: multipleImages,
+                            description: description
+                        });
+                    }
+                }
+            }
+        }
+        i++;
+    }
+    return formats;
+}
+
+let IMVersion = () => {
+    _IMVersion();
+    let text = _IMLoadText();
+    let lines = text.split("\n");
+    let re = /^([A-Za-z ()-]+):\s+(.*)/;
+    let o = {};
+    for (const line of lines) {
+        if (re.test(line)) {
+            let parts = line.match(re);
+            if (parts.length === 3) {
+                if (parts[1] === 'Delegates (built-in)') o['delegates'] = parts[2].trim().split(' ');
+                else if (parts[1] === 'Features') o[parts[1].toLowerCase()] = parts[2].trim().split(' ');
+                else o[parts[1].toLowerCase()] = parts[2].trim();
+            }
+        }
+    }
+    return o;
+}
 
 let _onIMReady = () => {
     _IMResize = Module.cwrap('_IMResize', null, ['number', 'number', 'number', 'number', 'number', 'number']);
@@ -401,7 +499,10 @@ let _onIMReady = () => {
     _IMShadowHighlight = Module.cwrap('_IMShadowHighlight', null, ['number', 'number', 'number', 'number', 'number', 'number', 'number', 'number', 'number', 'number', 'number', 'number']);
     _IMUnsaturateHue = Module.cwrap('_IMUnsaturateHue', null, ['number', 'number', 'number', 'number', 'number', 'number', 'number']);
     _IMTurbulence = Module.cwrap('_IMTurbulence', null, ['number', 'number', 'number', 'number', 'number', 'number', 'number', 'string', 'string']);
-    _IMToWebP = Module.cwrap('_IMToWebP', null, ['number', 'number', 'number', 'number']);
+    _IMToWebP = Module.cwrap('_IMToWebP', null, ['number', 'number', 'number', 'number', 'number']);
+    _IMToJp2 = Module.cwrap('_IMToJp2', null, ['number', 'number', 'number']);
+    _IMListFormats = Module.cwrap('_IMListFormats', null, []);
+    _IMVersion = Module.cwrap('_IMVersion', null, []);
 };
 
 $(window).on('IMReady', _onIMReady);

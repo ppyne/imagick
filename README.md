@@ -10,6 +10,11 @@ Try it here [ppyne.github.io/imagick](https://ppyne.github.io/imagick/).
 
 - ImageMagick Legacy version 6.9.12-66 (tar.gz present in the repo)
 - libwebp 1.2.4 (optional, tar.gz present in the repo)
+- libjpeg v8c (optional, tar.gz present in the repo)
+- openjpeg 2.5.0 (optional, tar.gz present in the repo)
+- zlib 1.2.12 (optional, tar.gz present in the repo)
+- libpng 1.6.37 (optional, tar.gz present in the repo)
+- FFTW 3.3.10 (optional, tar.gz present in the repo)
 - Emscripten SDK version 3.1.20
 - A Unix like environment (Mac or Linux is fine) with bash
 - Essential GNU building tools like make or pkg-config
@@ -31,17 +36,19 @@ And enjoy.
 
 ## Notes
 
-Except for WebP, we didn't need to convert images from one format to another with ImageMagick yet, so we didn't link against libpng or libjpeg. But it is possible, we made a try with libwebp and it works like a charm with all sorts of options. Also it is possible to convert formats like PNG or JPEG with JS directly (See below for an explanation).
+For conversions, we link ImageMagick against libwepb for full webp support, zlib and libpng for full png support, libjpeg for full jpeg support and openjpeg for full jpeg2000 support.Also it is possible to convert formats like PNG, WEBP or JPEG with JS directly, thanks to the native browser support (See below for an explanation).
+
+Fast Fourier transform is now supported.
 
 We use the Emscripten filesystem (FS) to exchange data between JS and ImageMagick.
 
-We also found convenient to use the native raw ".rgba" ImageMagick file format, which has the same byte order as the JS ImageData.
+For the data exchanges between the browser and the magickwand library, we found convenient to use the native raw ".rgba" ImageMagick file format, which has the same byte order as the JS ImageData.
 
 The `imagick.html` file present is not very usefull, the most important files are `imagick.wasm`, `imagick.js` and `index.html`.
 
-Since the JS Canvas permits shapes and text drawings natively, we don't see the need to use ImageMagick for this purpose, and didn't see the need to compile IM with the freetype lib.
+Since the JS Canvas permits shapes and text drawings natively, we don't see the need to use ImageMagick for this purpose, and we didn't compile IM with the freetype lib.
 
-And yes for many years now we use pure browser JS and jquery, and still do, we are not much exited by Nodejs, or TypeScript... sorry.
+And yes for many years now we use pure browser JS and jquery, and still do, we are not much exited by the use of Nodejs, or TypeScript... sorry. But feel free to contribute on this part.
 
 Here are the options overview set at compliation time for ImageMagick:
 
@@ -68,7 +75,7 @@ Delegate library configuration:
   Autotrace         --with-autotrace=no         no
   DJVU              --with-djvu=no              no
   DPS               --with-dps=no               no
-  FFTW              --with-fftw=no              no
+  FFTW              --with-fftw=yes             yes
   FLIF              --with-flif=no              no
   FlashPIX          --with-fpx=no               no
   FontConfig        --with-fontconfig=no        no
@@ -77,7 +84,7 @@ Delegate library configuration:
   Graphviz          --with-gvc=no
   HEIC              --with-heic=no              no
   JBIG              --with-jbig=no              no
-  JPEG v1           --with-jpeg=no              no
+  JPEG v1           --with-jpeg=yes             yes
   JPEG XL           --with-jxl=no               no
   LCMS              --with-lcms=no              no
   LQR               --with-lqr=no               no
@@ -85,10 +92,10 @@ Delegate library configuration:
   LZMA              --with-lzma=no              no
   Magick++          --with-magick-plus-plus=no  no
   OpenEXR           --with-openexr=no           no
-  OpenJP2           --with-openjp2=no           no
+  OpenJP2           --with-openjp2=yes          yes
   PANGO             --with-pango=no             no
   PERL              --with-perl=no              no
-  PNG               --with-png=no               no
+  PNG               --with-png=yes              yes
   RAQM              --with-raqm=no              no
   RAW               --with-raw=no               no
   RSVG              --with-rsvg=no              no
@@ -97,7 +104,7 @@ Delegate library configuration:
   WMF               --with-wmf=no               no
   X11               --with-x=no                 no
   XML               --with-xml=no               no
-  ZLIB              --with-zlib=no              no
+  ZLIB              --with-zlib=yes             yes
   ZSTD              --with-zstd=no              no
 ```
 

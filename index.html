@@ -50,6 +50,16 @@
             color: black;
             padding: 1px 3px;
         }
+        table {
+            border-spacing: 0;
+            border-collapse: collapse;
+        }
+        table tr td, table tr th {
+            border: 1px solid white;
+            padding: 4px 7px;
+            white-space: nowrap;
+            vertical-align: top;
+        }
     </style>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
     <script src="imagick.js"></script>
@@ -297,6 +307,47 @@
             else $('#webpsizeplural').text('');
         }
         let onIMReady = () => {
+            let version = IMVersion();
+            for (const key of Object.keys(version)) {
+                let $tr = $('<tr />');
+                $('#version').append($tr);
+                let $k = $('<td />');
+                $tr.append($k);
+                $k.text(key);
+                let $v = $('<td />');
+                $tr.append($v);
+                if (Array.isArray(version[key])) $v.text(version[key].join(', '));
+                else $v.text(version[key]);
+            }
+            let formats = IMListFormats();
+            let htrue = '<span style="color:green;">✓</span>';
+            let hfalse = '<span style="color:red;">✗</span>';
+            let boolean = (v) => {
+                if (v) return htrue;
+                return hfalse;
+            }
+            for (format of formats) {
+                let $tr = $('<tr />');
+                $('#formats').append($tr);
+                let $name = $('<td />');
+                $tr.append($name);
+                let $read = $('<td style="text-align:center" />');
+                $tr.append($read);
+                let $write = $('<td style="text-align:center" />');
+                $tr.append($write);
+                let $multiple = $('<td style="text-align:center" />');
+                $tr.append($multiple);
+                let $blob = $('<td style="text-align:center" />');
+                $tr.append($blob);
+                let $description = $('<td />');
+                $tr.append($description);
+                $name.text(format.name);
+                $read.html(boolean(format.read));
+                $write.html(boolean(format.write));
+                $multiple.html(boolean(format.multipleImages));
+                $blob.html(boolean(format.nativeBlob));
+                $description.text(format.description);
+            }
             let $filters = $('#filters');
             const sortedFilters = [...IMEnumFilters].sort();
             for (const filter of sortedFilters) {
@@ -527,6 +578,12 @@
 <body>
     <main style="display: none;">
         <h1>Test WASM ImageMagick Legacy</h1>
+        <h2>Version</h2>
+        <table id="version"></table>
+        <h2>Supported formats</h2>
+        <table id="formats">
+            <tr><th>Name</th><th>Read</th><th>Write</th><th>Multiple images</th><th>Native BLOB</th><th>Description</th></tr>
+        </table>
         <h2>Source</h2>
         <p><select id="source">
             <option value="peppers.png" selected>peppers.png</option>

@@ -1,6 +1,11 @@
 .DS_Store
 ImageMagick6-6.9.12-66
 libwebp-1.2.4
+fftw-3.3.10
+openjpeg-2.5.0
+jpeg-8c
+libpng-1.6.37
+zlib-1.2.12
 kernpresets2
 kernpresets3
 args
